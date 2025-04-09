@@ -28,26 +28,25 @@ export default function Swipe() {
       setDisliked([...disliked, currentRestaurant.id]);
     }
 
-    const isAlreadyExiting = exitingCards.some(
-      (card) => card.id === currentRestaurant.id,
-    );
+    // Add the card to exiting cards
+    setExitingCards((prev) => [
+      ...prev,
+      { id: currentRestaurant.id, direction },
+    ]);
 
-    if (!isAlreadyExiting) {
-      setExitingCards((prev) => [
-        ...prev,
-        { id: currentRestaurant.id, direction },
-      ]);
-    }
-
-    if (currentIndex < restaurants.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      setCurrentIndex(0);
-    }
-
+    // Wait for exit animation to start before changing index
     setTimeout(() => {
-      isSwipingRef.current = false;
-    }, 100);
+      if (currentIndex < restaurants.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        setCurrentIndex(0);
+      }
+
+      // Reset swiping state after a delay to allow animations to complete
+      setTimeout(() => {
+        isSwipingRef.current = false;
+      }, 300);
+    }, 50);
   }
 
   function handleExitComplete(id: number) {
@@ -81,6 +80,7 @@ export default function Swipe() {
                   key={`active-${restaurant.id}`}
                   restaurant={restaurant}
                   isTop={index === currentIndex}
+                  stackPosition={index - currentIndex}
                   handleSwipe={handleSwipe}
                   zIndex={restaurants.length - index}
                 />

@@ -1,3 +1,5 @@
+"use client";
+
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import type { PanInfo } from "framer-motion";
 import { Heart, X } from "lucide-react";
@@ -11,16 +13,17 @@ export function SwipeCard({
   isTop,
   handleSwipe,
   zIndex,
+  stackPosition,
 }: {
   restaurant: Restaurant;
   isTop: boolean;
   handleSwipe: (direction: "left" | "right") => void;
   zIndex: number;
+  stackPosition: number;
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const scale = useMotionValue(1);
-  const rotate = useTransform(x, [-200, 200], [-20, 20]);
+  const swipeRotate = useTransform(x, [-200, 200], [-20, 20]);
 
   const hasSwipedRef = useRef(false);
 
@@ -42,28 +45,60 @@ export function SwipeCard({
     } else {
       animate(x, 0, { type: "spring", stiffness: 500, damping: 30 });
       animate(y, 0, { type: "spring", stiffness: 500, damping: 30 });
-      animate(rotate, 0, { type: "spring", stiffness: 500, damping: 30 });
-      animate(scale, 1, { type: "spring", stiffness: 500, damping: 30 });
     }
   }
 
+  // Calculate card position values based on stack position
+  const cardStyles = {
+    x,
+    y,
+    rotate: isTop ? swipeRotate : stackPosition * -5,
+    zIndex,
+    transformOrigin: "bottom center",
+  };
+
+  // Animation variants for different stack positions
+  const variants = {
+    current: {
+      scale: 1,
+      opacity: 1,
+      rotateY: 0,
+      translateX: 0,
+      translateY: 0,
+      transition: {
+        type: "spring",
+        stiffness: 350,
+        damping: 26,
+        mass: 0.9,
+        duration: 0.4,
+      },
+    },
+    stacked: (position: number) => ({
+      scale: 1 - position * 0.05,
+      opacity: 1 - position * 0.15,
+      rotateY: position * 5,
+      translateX: position * 8,
+      translateY: position * 15,
+      transition: {
+        type: "spring",
+        stiffness: 350,
+        damping: 26,
+        mass: 0.9,
+        duration: 0.4,
+      },
+    }),
+  };
+
   return (
     <motion.div
-      style={{
-        x,
-        y,
-        rotate,
-        scale,
-        zIndex,
-      }}
+      style={cardStyles}
       drag={isTop && !hasSwipedRef.current}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       onDragEnd={onDragEnd}
-      initial={
-        isTop ? { scale: 0.95, opacity: 1 } : { scale: 0.9, opacity: 0.7 }
-      }
-      animate={isTop ? { scale: 1, opacity: 1 } : { scale: 0.95, opacity: 0.8 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      variants={variants}
+      initial="stacked"
+      animate={isTop ? "current" : "stacked"}
+      custom={stackPosition}
       className="absolute top-0 right-0 left-0 h-full w-full"
     >
       <div className="relative h-full w-full overflow-hidden rounded-2xl bg-white shadow-xl">

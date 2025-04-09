@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { Heart, X } from "lucide-react";
 
@@ -15,35 +17,18 @@ export function ExitingCard({
   onExitComplete: () => void;
   zIndex: number;
 }) {
-  const initialXOffset = direction === "right" ? 100 : -100;
   const finalXOffset =
     direction === "right" ? window.innerWidth + 200 : -window.innerWidth - 200;
   const rotation = direction === "right" ? 30 : -30;
 
   const variants = {
-    initial: {
-      x: 0,
-      y: 0,
-      rotate: 0,
-      scale: 1,
-    },
-    firstStage: {
-      x: initialXOffset,
-      y: 50,
-      rotate: rotation / 2,
-      scale: 0.9,
-      transition: {
-        duration: 0.15,
-        ease: "easeOut",
-      },
-    },
-    finalStage: {
+    exit: {
       x: finalXOffset,
-      y: 400,
+      y: 100,
       rotate: rotation,
-      scale: 0.7,
+      opacity: 0,
       transition: {
-        duration: 0.35,
+        duration: 0.5,
         ease: [0.32, 0.72, 0.29, 0.95],
       },
     },
@@ -51,8 +36,8 @@ export function ExitingCard({
 
   return (
     <motion.div
-      initial="initial"
-      animate={["firstStage", "finalStage"]}
+      initial={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
+      animate="exit"
       variants={variants}
       onAnimationComplete={() => onExitComplete()}
       style={{ zIndex }}
