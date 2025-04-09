@@ -1,3 +1,68 @@
-export default function Home() {
-  return <></>;
+import { Menu } from "lucide-react";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+export default function LandingPage() {
+  return (
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-50 to-slate-100">
+      {/* Header with hamburger menu */}
+      <header className="flex w-full justify-end p-4">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10"
+              aria-label="Menu"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <nav className="mt-8 ml-8 flex flex-col gap-4">
+              <Link href="#" className="text-lg font-medium hover:underline">
+                Home
+              </Link>
+              <Link href="#" className="text-lg font-medium hover:underline">
+                About
+              </Link>
+              <Link href="#" className="text-lg font-medium hover:underline">
+                Contact
+              </Link>
+              <Link href="#" className="text-lg font-medium hover:underline">
+                Help
+              </Link>
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </header>
+
+      {/* Main content */}
+      <main className="flex flex-1 flex-col items-center justify-center px-4 text-center">
+        <div className="mx-auto max-w-3xl space-y-12">
+          {/* Heading */}
+          <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+            Find the Perfect Restaurant Together
+          </h1>
+
+          <p className="mx-auto max-w-xl text-lg text-slate-600">
+            Create or join a group to discover and decide on restaurants that
+            everyone will love.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <Button size="lg" className="px-8 py-6 text-lg">
+              Create Group
+            </Button>
+            <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
+              Join Group
+            </Button>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 }
