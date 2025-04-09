@@ -1,14 +1,10 @@
-import {
-  motion,
-  type PanInfo,
-  useMotionValue,
-  useTransform,
-  animate,
-} from "framer-motion";
-import { useState, useRef } from "react";
-import { Restaurant } from "@/types/restaurant";
-import { Rating } from "@/components/swipe/rating";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import type { PanInfo } from "framer-motion";
 import { Heart, X } from "lucide-react";
+import { useRef } from "react";
+
+import { Rating } from "@/components/swipe/rating";
+import type { Restaurant } from "@/types/restaurant";
 
 export function SwipeCard({
   restaurant,
