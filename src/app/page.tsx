@@ -52,7 +52,7 @@ export default function LandingPage() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 text-center">
         <div className="mx-auto max-w-3xl space-y-12">
           {/* Heading */}
-          <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900 md:text-5xl lg:text-6xl">
             Find the Perfect Restaurant Together
           </h1>
 
@@ -66,7 +66,7 @@ export default function LandingPage() {
             <Button size="lg" className="px-8 py-6 text-lg">
               Create Group
             </Button>
-            <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
+            <Button size="lg" variant="secondary" className="px-8 py-6 text-lg">
               Join Group
             </Button>
           </div>
