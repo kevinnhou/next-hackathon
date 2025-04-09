@@ -1,20 +1,18 @@
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "~/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "~/ui/sheet";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-muted/60 to-muted">
-      {/* Header with hamburger menu */}
       <header className="flex w-full justify-end p-4">
         <Sheet>
           <SheetTrigger asChild>
@@ -29,9 +27,7 @@ export default function LandingPage() {
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>
-                <VisuallyHidden>Menu</VisuallyHidden>
-              </SheetTitle>
+              <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
             <nav className="mt-8 ml-8 flex flex-col gap-4">
               <Link href="#" className="text-lg font-medium hover:underline">
@@ -51,10 +47,8 @@ export default function LandingPage() {
         </Sheet>
       </header>
 
-      {/* Main content */}
       <main className="flex flex-1 flex-col items-center justify-center px-4 text-center">
         <div className="mx-auto max-w-3xl space-y-12">
-          {/* Heading */}
           <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
             Find the Perfect Restaurant Together
           </h1>
@@ -64,7 +58,6 @@ export default function LandingPage() {
             everyone will love.
           </p>
 
-          {/* Buttons */}
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button size="lg" className="px-8 py-6 text-lg">
               Create Group
