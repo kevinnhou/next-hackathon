@@ -2,7 +2,13 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function LandingPage() {
   return (
@@ -21,6 +27,9 @@ export default function LandingPage() {
             </Button>
           </SheetTrigger>
           <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
             <nav className="mt-8 ml-8 flex flex-col gap-4">
               <Link href="#" className="text-lg font-medium hover:underline">
                 Home
