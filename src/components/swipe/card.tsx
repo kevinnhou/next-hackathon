@@ -22,36 +22,30 @@ export function SwipeCard({
   const scale = useMotionValue(1);
   const rotate = useTransform(x, [-200, 200], [-20, 20]);
 
-  // Use a ref to track if this card has already been swiped
   const hasSwipedRef = useRef(false);
 
-  // Calculate opacity for the like/dislike indicators
   const likeOpacity = useTransform(x, [0, 100], [0, 1]);
   const dislikeOpacity = useTransform(x, [-100, 0], [1, 0]);
 
-  const onDragEnd = (
+  function onDragEnd(
     event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo,
-  ) => {
-    // Prevent multiple swipes for the same card
+  ) {
     if (hasSwipedRef.current) return;
 
     if (info.offset.x > 100) {
-      // Swiped right
       hasSwipedRef.current = true;
       handleSwipe("right");
     } else if (info.offset.x < -100) {
-      // Swiped left
       hasSwipedRef.current = true;
       handleSwipe("left");
     } else {
-      // Reset position if not swiped far enough
       animate(x, 0, { type: "spring", stiffness: 500, damping: 30 });
       animate(y, 0, { type: "spring", stiffness: 500, damping: 30 });
       animate(rotate, 0, { type: "spring", stiffness: 500, damping: 30 });
       animate(scale, 1, { type: "spring", stiffness: 500, damping: 30 });
     }
-  };
+  }
 
   return (
     <motion.div
@@ -79,7 +73,6 @@ export function SwipeCard({
           className="pointer-events-none h-full w-full object-cover"
         />
 
-        {/* Like indicator */}
         {isTop && (
           <motion.div
             style={{ opacity: likeOpacity }}
@@ -93,7 +86,6 @@ export function SwipeCard({
           </motion.div>
         )}
 
-        {/* Dislike indicator */}
         {isTop && (
           <motion.div
             style={{ opacity: dislikeOpacity }}

@@ -15,13 +15,11 @@ export function ExitingCard({
   onExitComplete: () => void;
   zIndex: number;
 }) {
-  // Calculate initial and final positions based on direction
   const initialXOffset = direction === "right" ? 100 : -100;
   const finalXOffset =
     direction === "right" ? window.innerWidth + 200 : -window.innerWidth - 200;
   const rotation = direction === "right" ? 30 : -30;
 
-  // Define animation variants for a two-stage animation
   const variants = {
     initial: {
       x: 0,
@@ -29,7 +27,6 @@ export function ExitingCard({
       rotate: 0,
       scale: 1,
     },
-    // First stage: Quick movement in swipe direction
     firstStage: {
       x: initialXOffset,
       y: 50,
@@ -40,7 +37,6 @@ export function ExitingCard({
         ease: "easeOut",
       },
     },
-    // Second stage: Diagonal downward movement
     finalStage: {
       x: finalXOffset,
       y: 400,
@@ -48,7 +44,7 @@ export function ExitingCard({
       scale: 0.7,
       transition: {
         duration: 0.35,
-        ease: [0.32, 0.72, 0.29, 0.95], // Custom ease for natural movement
+        ease: [0.32, 0.72, 0.29, 0.95],
       },
     },
   };
@@ -69,7 +65,6 @@ export function ExitingCard({
           className="h-full w-full object-cover"
         />
 
-        {/* Like/Dislike indicator based on direction */}
         {direction === "right" && (
           <div className="absolute top-10 right-10 rotate-12 transform rounded-full">
             <Heart
