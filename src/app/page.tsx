@@ -1,3 +1,4 @@
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +13,7 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-50 to-slate-100">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-muted/60 to-muted">
       {/* Header with hamburger menu */}
       <header className="flex w-full justify-end p-4">
         <Sheet>
@@ -28,7 +29,9 @@ export default function LandingPage() {
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
+              <SheetTitle>
+                <VisuallyHidden>Menu</VisuallyHidden>
+              </SheetTitle>
             </SheetHeader>
             <nav className="mt-8 ml-8 flex flex-col gap-4">
               <Link href="#" className="text-lg font-medium hover:underline">
@@ -52,11 +55,11 @@ export default function LandingPage() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 text-center">
         <div className="mx-auto max-w-3xl space-y-12">
           {/* Heading */}
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 md:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
             Find the Perfect Restaurant Together
           </h1>
 
-          <p className="mx-auto max-w-xl text-lg text-slate-600">
+          <p className="mx-auto max-w-xl text-lg">
             Create or join a group to discover and decide on restaurants that
             everyone will love.
           </p>
@@ -66,7 +69,7 @@ export default function LandingPage() {
             <Button size="lg" className="px-8 py-6 text-lg">
               Create Group
             </Button>
-            <Button size="lg" variant="secondary" className="px-8 py-6 text-lg">
+            <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
               Join Group
             </Button>
           </div>
