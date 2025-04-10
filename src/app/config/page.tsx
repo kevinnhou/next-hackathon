@@ -2,7 +2,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Locate, MapPin, Menu } from "lucide-react";
+import { Locate, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -22,13 +22,6 @@ import {
   FormMessage,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/ui/sheet";
 import { Slider } from "~/ui/slider";
 
 export default function Config() {
@@ -87,39 +80,6 @@ export default function Config() {
 
   return (
     <div className="min-h-screen w-full bg-background">
-      <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center justify-between px-4 md:px-6">
-          <h1 className="text-xl font-semibold">Group Settings</h1>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
-              </SheetHeader>
-              <nav className="grid gap-4 py-4">
-                <Button variant="ghost" className="justify-start">
-                  Home
-                </Button>
-                <Button variant="ghost" className="justify-start">
-                  My Groups
-                </Button>
-                <Button variant="ghost" className="justify-start">
-                  Profile
-                </Button>
-                <Button variant="ghost" className="justify-start">
-                  Settings
-                </Button>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </header>
-
       <main className="mx-auto w-full max-w-2xl px-4 py-8">
         <div className="mb-6">
           <h2 className="text-2xl font-semibold">Create Your Group</h2>
