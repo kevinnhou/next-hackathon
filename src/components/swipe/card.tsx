@@ -31,7 +31,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "h-[400px] w-[350px] overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-[0_0_10px_rgba(0,0,0,0.08)]",
+        "h-[450px] w-[350px] overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-[0_0_10px_rgba(0,0,0,0.08)]",
         className,
       )}
     >
@@ -40,13 +40,15 @@ export function Card({
           <img
             src={photos[0] || "/placeholder.svg"}
             alt={name}
-            className="mt-0 h-full w-full object-cover"
+            className="pointer-events-none mt-0 h-full w-full object-cover"
           />
         </div>
       )}
       <div className="flex flex-col gap-y-2 p-2 px-4">
         <div className="flex items-start justify-between">
-          <h2 className="truncate text-lg font-semibold">{name}</h2>
+          <h2 className="truncate text-lg font-semibold text-secondary">
+            {name}
+          </h2>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium">{rating}</span>
