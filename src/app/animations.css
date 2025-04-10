@@ -1,0 +1,31 @@
+/* Animation for cards moving up */
+@keyframes moveUp {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+  
+  .card-container {
+    position: relative;
+  }
+  
+  /* Simplified animations - just fade for vetoed cards */
+  .restaurant-card {
+    transition: opacity 500ms ease-in-out;
+  }
+  
+  .restaurant-card.vetoed {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Add this to globals.css or create a new animations.css file */
+  .card-position-1,
+  .card-position-2,
+  .card-position-3 {
+    transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;
+  }
+  

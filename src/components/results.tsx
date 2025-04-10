@@ -8,10 +8,7 @@ import { RestaurantCard } from "./restaurant-card";
 
 import { Button } from "@/components/ui/button";
 
-/**
- * Mock data for restaurants
- * In a real application, this would be fetched from an API
- */
+// Mock data for restaurants
 const initialRestaurants = [
   {
     id: 1,
@@ -22,6 +19,7 @@ const initialRestaurants = [
     distance: "0.8 miles",
     image: "/placeholder.svg?height=200&width=400",
     priceRange: "$$",
+    isVetoed: false,
   },
   {
     id: 2,
@@ -32,6 +30,7 @@ const initialRestaurants = [
     distance: "1.2 miles",
     image: "/placeholder.svg?height=200&width=400",
     priceRange: "$$$",
+    isVetoed: false,
   },
   {
     id: 3,
@@ -42,6 +41,7 @@ const initialRestaurants = [
     distance: "0.5 miles",
     image: "/placeholder.svg?height=200&width=400",
     priceRange: "$$",
+    isVetoed: false,
   },
   {
     id: 4,
@@ -52,6 +52,7 @@ const initialRestaurants = [
     distance: "1.5 miles",
     image: "/placeholder.svg?height=200&width=400",
     priceRange: "$$$",
+    isVetoed: false,
   },
   {
     id: 5,
@@ -62,6 +63,7 @@ const initialRestaurants = [
     distance: "0.7 miles",
     image: "/placeholder.svg?height=200&width=400",
     priceRange: "$",
+    isVetoed: false,
   },
   {
     id: 6,
@@ -72,49 +74,47 @@ const initialRestaurants = [
     distance: "1.8 miles",
     image: "/placeholder.svg?height=200&width=400",
     priceRange: "$$",
+    isVetoed: false,
   },
 ];
 
-/**
- * Results component displays a list of restaurant recommendations
- * Users can veto restaurants they don't want to consider
- */
 export function Results() {
-  // State for restaurants and vetoed restaurants
-  const [restaurants] = useState(initialRestaurants);
+  const [restaurants, setRestaurants] = useState(initialRestaurants);
   const [vetoed, setVetoed] = useState<number[]>([]);
   const router = useRouter();
 
+  // Update the handleVeto function to first fade out the card, then update positions
+  const handleVeto = (id: number) => {
+    // First mark the restaurant as being vetoed (for fade animation)
+    const updatedRestaurants = restaurants.map((restaurant) =>
+      restaurant.id === id ? { ...restaurant, isVetoed: true } : restaurant,
+    );
+    setRestaurants(updatedRestaurants);
+
+    // After fade animation completes, update the vetoed list
+    setTimeout(() => {
+      setVetoed([...vetoed, id]);
+    }, 500); // Match this timing with the CSS transition duration
+  };
+
+  // Update the topThree calculation to filter out actively vetoing restaurants
   // Get top 3 restaurants that haven't been vetoed
   const topThree = restaurants
     .filter((restaurant) => !vetoed.includes(restaurant.id))
     .slice(0, 3);
 
-  /**
-   * Handle vetoing a restaurant
-   * @param id - The ID of the restaurant to veto
-   */
-  const handleVeto = (id: number) => {
-    setVetoed([...vetoed, id]);
-  };
-
-  /**
-   * Reset the veto list to show all restaurants again
-   */
   const handleReset = () => {
     setVetoed([]);
+    // Reset any animation states
+    setRestaurants(initialRestaurants.map((r) => ({ ...r, isVetoed: false })));
   };
 
-  /**
-   * Navigate back to the previous page
-   */
   const handleBack = () => {
     router.back();
   };
 
   return (
     <div className="space-y-6">
-      {/* Back button and reset button */}
       <div className="mb-4 flex items-center justify-between">
         <Button variant="ghost" size="icon" onClick={handleBack}>
           <ArrowLeft className="h-5 w-5" />
@@ -129,17 +129,16 @@ export function Results() {
         </Button>
       </div>
 
-      {/* Top 3 restaurants */}
       {topThree.length > 0 ? (
         <div className="space-y-4">
-          {/* Restaurant cards */}
           {topThree.map((restaurant, index) => (
-            <RestaurantCard
-              key={restaurant.id}
-              restaurant={restaurant}
-              position={index + 1}
-              onVeto={handleVeto}
-            />
+            <div key={restaurant.id} className="mb-4">
+              <RestaurantCard
+                restaurant={restaurant}
+                position={index + 1}
+                onVeto={handleVeto}
+              />
+            </div>
           ))}
         </div>
       ) : (
@@ -152,7 +151,6 @@ export function Results() {
         </div>
       )}
 
-      {/* Veto count display */}
       {vetoed.length > 0 && (
         <div className="mt-6 text-center text-sm text-muted-foreground">
           {vetoed.length} restaurant{vetoed.length !== 1 ? "s" : ""} vetoed

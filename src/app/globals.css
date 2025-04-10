@@ -140,3 +140,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Animation */
+
+@layer utilities {
+  .transition-fade {
+    transition-property: opacity;
+    transition-duration: 500ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  .fade-out {
+    opacity: 0;
+  }
+}
