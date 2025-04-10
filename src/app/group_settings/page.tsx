@@ -35,7 +35,7 @@ export default function GroupSettingsPage() {
     null,
   );
 
-  const handleLocationSelect = (type: "current" | "custom") => {
+  function handleLocationSelect(type: "current" | "custom") {
     setLocationType(type);
 
     if (type === "current") {
@@ -47,12 +47,12 @@ export default function GroupSettingsPage() {
       // For now, we'll simulate it
       setLocation({ lat: 40.7128, lng: -74.006 }); // Example coordinates (New York)
     }
-  };
+  }
 
-  const handleCreateGroup = () => {
+  function handleCreateGroup() {
     // Handle group creation logic here
     // Navigate to next page or show confirmation
-  };
+  }
 
   return (
     <div className="min-h-screen w-full bg-background">
