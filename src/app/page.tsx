@@ -1,6 +1,8 @@
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 
+import { navigationLinks } from "@/config/site";
 import { Button } from "~/ui/button";
 import {
   Sheet,
@@ -27,21 +29,20 @@ export default function LandingPage() {
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
+              <SheetTitle>
+                <VisuallyHidden>Menu</VisuallyHidden>
+              </SheetTitle>
             </SheetHeader>
             <nav className="mt-8 ml-8 flex flex-col gap-4">
-              <Link href="#" className="text-lg font-medium hover:underline">
-                Home
-              </Link>
-              <Link href="#" className="text-lg font-medium hover:underline">
-                About
-              </Link>
-              <Link href="#" className="text-lg font-medium hover:underline">
-                Contact
-              </Link>
-              <Link href="#" className="text-lg font-medium hover:underline">
-                Help
-              </Link>
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="text-lg font-medium hover:underline"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </SheetContent>
         </Sheet>
@@ -59,12 +60,16 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="px-8 py-6 text-lg">
-              Create Group
-            </Button>
-            <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
-              Join Group
-            </Button>
+            <Link href="/create">
+              <Button size="lg" className="px-8 py-6 text-lg">
+                Create Group
+              </Button>
+            </Link>
+            <Link href="/join">
+              <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
+                Join Group
+              </Button>
+            </Link>
           </div>
         </div>
       </main>
