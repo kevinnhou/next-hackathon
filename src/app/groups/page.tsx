@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 
-export default function Dashboard() {
+export default function Groups() {
   return (
     <>
       <div className="mx-48 my-12">

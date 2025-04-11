@@ -17,6 +17,7 @@ export const groups = [
     location: "Sydney",
     users: 9,
     active: false,
+    createdAt: new Date("2024-01-01"),
   },
   {
     id: "3",
@@ -26,6 +27,7 @@ export const groups = [
     location: "Sydney",
     users: 12,
     active: false,
+    createdAt: new Date("2024-01-01"),
   },
   {
     id: "4",
@@ -35,5 +37,6 @@ export const groups = [
     location: "Sydney",
     users: 5,
     active: false,
+    createdAt: new Date("2024-01-01"),
   },
 ];
