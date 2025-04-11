@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 export default function Groups() {
   return (
     <>
-      <div className="mx-48 my-12">
+      <div className="mx-4 my-12 lg:mx-48">
         <div className="flex flex-row justify-between">
           <h1 className="text-4xl font-bold">My Groups</h1>
           <Button asChild>
@@ -17,7 +17,7 @@ export default function Groups() {
             </Link>
           </Button>
         </div>
-        <div className="my-2 grid grid-cols-2 gap-4">
+        <div className="my-4 grid grid-cols-1 gap-4 lg:my-2 lg:grid-cols-2">
           {groups.map((group) => (
             <GroupCard
               key={group.id}
