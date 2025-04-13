@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-unused-vars */
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -5,8 +6,8 @@ import { User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "~/ui/button";
+import { Card } from "~/ui/card";
 
 // Mock data for demonstration
 const mockUsers = [
@@ -41,6 +42,7 @@ export default function GroupLobbyPage() {
     const addUser = (index: number) => {
       if (index < mockUsers.length) {
         setUsers((prev) => [...prev, mockUsers[index]]);
+        // eslint-disable-next-line react-web-api/no-leaked-timeout
         setTimeout(() => addUser(index + 1), 1500);
       }
     };

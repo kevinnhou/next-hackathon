@@ -1,7 +1,7 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Locate, MapPin } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,17 +21,10 @@ import {
 } from "~/ui/form";
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
-import { redirect } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
 
 export default function Create() {
-  let loggedIn = false;
-  /*const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
-    redirect("/login");
-  }*/
+  // const loggedIn = await checkUser();
+  const loggedIn = false;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
@@ -82,6 +75,7 @@ export default function Create() {
 
         toast.error("An error occurred while creating the group.");
       }
+      // eslint-disable-next-line ts/no-unused-vars
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {

@@ -1,19 +1,18 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
-
-import { GroupCard } from "@/components/groups/card";
-import { Button } from "@/components/ui/button";
-import { groups } from "@/data/groups";
-import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export default async function Groups() {
-  const supabase = await createClient();
+import { groups } from "@/data/groups";
+import checkUser from "@/hooks/check-user";
+import { GroupCard } from "~/groups/card";
+import { Button } from "~/ui/button";
 
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
+export default async function Groups() {
+  const loggedIn = await checkUser();
+  if (!loggedIn) {
     redirect("/login");
   }
+
   return (
     <>
       <div className="mx-4 my-12 lg:mx-48">
