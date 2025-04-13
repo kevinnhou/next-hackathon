@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Locate, MapPin } from "lucide-react";
 import { useState } from "react";
@@ -22,16 +21,11 @@ import {
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
 import { redirect } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
+import checkUser from "@/hooks/check-user";
 
 export default function Create() {
-  let loggedIn = false;
-  /*const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
-    redirect("/login");
-  }*/
+  //const loggedIn = await checkUser();
+  const loggedIn = false;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
