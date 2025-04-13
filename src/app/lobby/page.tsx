@@ -59,14 +59,14 @@ export default function GroupLobbyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/60 to-muted">
       <main className="container mx-auto flex max-w-md flex-col items-center px-4 py-8">
-        <Card className="mb-8 w-full bg-white p-6 text-center shadow-md">
+        <Card className="mb-8 w-full p-6 text-center shadow-md">
           <h2 className="mb-2 text-lg font-medium">Join Code</h2>
           <div className="flex items-center justify-center">
-            <div className="rounded-lg bg-slate-100 px-6 py-3 text-4xl font-bold tracking-wider">
+            <div className="rounded-lg px-6 py-3 text-4xl font-bold tracking-wider">
               {groupCode}
             </div>
           </div>
-          <p className="mt-4 text-sm text-slate-500">
+          <p className="mt-4 text-sm">
             Share this code with friends to join your group
           </p>
         </Card>
@@ -85,10 +85,10 @@ export default function GroupLobbyPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center gap-3 rounded-lg bg-white p-4 shadow"
+                  className="flex items-center gap-3 rounded-lg"
                 >
-                  <div className="rounded-full bg-slate-100 p-1">
-                    <User className="h-6 w-6 text-slate-600" />
+                  <div className="rounded-full">
+                    <User className="h-6 w-6" />
                   </div>
                   <span className="truncate font-medium">{user.name}</span>
                 </motion.div>
@@ -97,7 +97,7 @@ export default function GroupLobbyPage() {
           </div>
 
           {users.length === 0 && (
-            <div className="py-8 text-center text-slate-500">
+            <div className="py-8 text-center">
               Waiting for people to join...
             </div>
           )}
@@ -117,7 +117,7 @@ export default function GroupLobbyPage() {
             >
               Start Choosing
             </Button>
-            <p className="mt-2 text-center text-sm text-slate-500">
+            <p className="mt-2 text-center text-sm">
               {users.length === 0
                 ? "Wait for members to join before starting"
                 : "Everyone ready? Let's go!"}

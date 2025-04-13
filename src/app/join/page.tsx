@@ -23,6 +23,7 @@ export default function Join() {
     try {
       toast.success("You've joined the group successfully");
       router.push(`/group/${code}`);
+      // eslint-disable-next-line ts/no-unused-vars
     } catch (error) {
       toast.error("Failed to join group. Please try again.");
     } finally {
