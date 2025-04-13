@@ -1,10 +1,7 @@
-/* eslint-disable ts/no-unused-vars */
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Locate, MapPin } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -24,9 +21,17 @@ import {
 } from "~/ui/form";
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
 export default function Create() {
-  const router = useRouter();
+  let loggedIn = false;
+  /*const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user) {
+    redirect("/login");
+  }*/
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
@@ -58,6 +63,11 @@ export default function Create() {
       if (result.success) {
         toast.success(result.message);
         // router.push("/groups")
+        if (!loggedIn) {
+          redirect("/login");
+        } else {
+          redirect("/groups");
+        }
       } else {
         if (result.errors) {
           Object.entries(result.errors).forEach(([field, errors]) => {

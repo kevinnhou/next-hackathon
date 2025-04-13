@@ -4,8 +4,16 @@ import Link from "next/link";
 import { GroupCard } from "@/components/groups/card";
 import { Button } from "@/components/ui/button";
 import { groups } from "@/data/groups";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function Groups() {
+export default async function Groups() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user) {
+    redirect("/login");
+  }
   return (
     <>
       <div className="mx-4 my-12 lg:mx-48">
