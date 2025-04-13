@@ -24,9 +24,19 @@ import {
 } from "~/ui/form";
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Create() {
-  const router = useRouter();
+export default async function Create() {
+  const supabase = await createClient();
+  let loggedIn = false;
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data?.user) {
+    loggedIn = false;
+  } else {
+    loggedIn = true;
+  }
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
@@ -58,6 +68,11 @@ export default function Create() {
       if (result.success) {
         toast.success(result.message);
         // router.push("/groups")
+        if (!loggedIn) {
+          redirect("/login");
+        } else {
+          redirect("/groups");
+        }
       } else {
         if (result.errors) {
           Object.entries(result.errors).forEach(([field, errors]) => {
