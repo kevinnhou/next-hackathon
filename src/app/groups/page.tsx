@@ -1,8 +1,9 @@
-import { GroupCard } from "@/components/groups/card";
-import { groups } from "@/data/groups";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Plus } from "lucide-react";
+import Link from "next/link";
+
+import { GroupCard } from "@/components/groups/card";
+import { Button } from "@/components/ui/button";
+import { groups } from "@/data/groups";
 
 export default function Groups() {
   return (
@@ -11,7 +12,7 @@ export default function Groups() {
         <div className="flex flex-row justify-between">
           <h1 className="text-4xl font-bold">My Groups</h1>
           <Button asChild>
-            <Link href="/config">
+            <Link href="/create">
               <Plus strokeWidth={3} />
               Create Group
             </Link>

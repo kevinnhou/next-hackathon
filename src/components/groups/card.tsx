@@ -1,11 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { User, SlidersHorizontal } from "lucide-react";
-import type React from "react";
+import { SlidersHorizontal, User } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { Slider } from "@radix-ui/react-slider";
+import type React from "react";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface GroupCardProps {
@@ -38,7 +37,7 @@ export function GroupCard({
               asChild
               className="bg-emerald-500 text-card-foreground hover:bg-emerald-600"
             >
-              <Link href="/choose">
+              <Link href="/create">
                 <User strokeWidth={3} />
                 {users} members
               </Link>
@@ -57,30 +56,29 @@ export function GroupCard({
         </span>
       </Card>
     );
-  } else {
-    return (
-      <Card className="flex flex-col rounded-xl border bg-card p-[1px]">
-        <div className="py-4">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-2xl font-bold">{name}</CardTitle>
-            <Button asChild variant="secondary" size="icon">
-              <Link href="/config">
-                <SlidersHorizontal strokeWidth={2} />
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-foreground/40">{users} members</p>
-            <p className="text-sm text-foreground/40">${budget} budget</p>
-            <p className="text-sm text-foreground/40">
-              {location} - {radius}km
-            </p>
-            <p className="text-sm text-foreground/40">
-              {date.toLocaleDateString()}
-            </p>
-          </CardContent>
-        </div>
-      </Card>
-    );
   }
+  return (
+    <Card className="flex flex-col rounded-xl border bg-card p-[1px]">
+      <div className="py-4">
+        <CardHeader className="flex flex-row justify-between">
+          <CardTitle className="text-2xl font-bold">{name}</CardTitle>
+          <Button asChild variant="secondary" size="icon">
+            <Link href="/create">
+              <SlidersHorizontal strokeWidth={2} />
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-foreground/40">{users} members</p>
+          <p className="text-sm text-foreground/40">${budget} budget</p>
+          <p className="text-sm text-foreground/40">
+            {location} - {radius}km
+          </p>
+          <p className="text-sm text-foreground/40">
+            {date.toLocaleDateString()}
+          </p>
+        </CardContent>
+      </div>
+    </Card>
+  );
 }
