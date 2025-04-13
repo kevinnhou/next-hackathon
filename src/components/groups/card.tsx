@@ -6,6 +6,7 @@ import type React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Slider } from "@radix-ui/react-slider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface GroupCardProps {
   name: string;
@@ -28,52 +29,58 @@ export function GroupCard({
 }: GroupCardProps) {
   if (active) {
     return (
-      <div className="relative inline-flex h-full grow flex-col overflow-hidden rounded-xl bg-neutral-900 p-[1px] focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none">
-        <span className="absolute inset-[-1000%] animate-[spin_5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#34D399_0%,#000000_50%,#34D399_100%)]" />
-        <span className="flex h-full w-full flex-col rounded-xl bg-neutral-900 p-4 text-white backdrop-blur-3xl">
-          <div className="flex flex-row justify-between">
-            <h2 className="text-2xl font-bold">{name}</h2>
+      <Card className="relative inline-flex h-full grow flex-col overflow-hidden rounded-xl bg-card p-[1px]">
+        <span className="absolute inset-[-1000%] animate-[spin_5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#34D399_0%,#ffffff_50%,#34D399_100%)] dark:bg-[conic-gradient(from_90deg_at_50%_50%,#34D399_0%,#000000_50%,#34D399_100%)]" />
+        <span className="flex h-full w-full flex-col rounded-xl bg-card py-4 text-card-foreground backdrop-blur-3xl">
+          <CardHeader className="flex flex-row justify-between">
+            <CardTitle className="text-2xl font-bold">{name}</CardTitle>
             <Button
               asChild
-              className="bg-emerald-500 text-white hover:bg-emerald-600"
+              className="bg-emerald-500 text-card-foreground hover:bg-emerald-600"
             >
               <Link href="/choose">
                 <User strokeWidth={3} />
                 {users} members
               </Link>
             </Button>
-          </div>
+          </CardHeader>
 
-          <p className="text-sm text-foreground/40">${budget} budget</p>
-          <p className="text-sm text-foreground/40">
-            {location} - {radius}km
-          </p>
-          <p className="text-sm text-foreground/40">
-            {date.toLocaleDateString()}
-          </p>
+          <CardContent>
+            <p className="text-sm text-foreground/40">${budget} budget</p>
+            <p className="text-sm text-foreground/40">
+              {location} - {radius}km
+            </p>
+            <p className="text-sm text-foreground/40">
+              {date.toLocaleDateString()}
+            </p>
+          </CardContent>
         </span>
-      </div>
+      </Card>
     );
   } else {
     return (
-      <div className="flex flex-col rounded-xl border border-neutral-800 bg-neutral-900 p-4">
-        <div className="flex flex-row justify-between">
-          <h2 className="text-2xl font-bold">{name}</h2>
-          <Button asChild variant="ghost" size="icon">
-            <Link href="/config">
-              <SlidersHorizontal strokeWidth={2} />
-            </Link>
-          </Button>
+      <Card className="flex flex-col rounded-xl border bg-card p-[1px]">
+        <div className="py-4">
+          <CardHeader className="flex flex-row justify-between">
+            <CardTitle className="text-2xl font-bold">{name}</CardTitle>
+            <Button asChild variant="secondary" size="icon">
+              <Link href="/config">
+                <SlidersHorizontal strokeWidth={2} />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-foreground/40">{users} members</p>
+            <p className="text-sm text-foreground/40">${budget} budget</p>
+            <p className="text-sm text-foreground/40">
+              {location} - {radius}km
+            </p>
+            <p className="text-sm text-foreground/40">
+              {date.toLocaleDateString()}
+            </p>
+          </CardContent>
         </div>
-        {/*<p className="text-sm text-foreground/40">{users} members</p>*/}
-        <p className="text-sm text-foreground/40">${budget} budget</p>
-        <p className="text-sm text-foreground/40">
-          {location} - {radius}km
-        </p>
-        <p className="text-sm text-foreground/40">
-          {date.toLocaleDateString()}
-        </p>
-      </div>
+      </Card>
     );
   }
 }
