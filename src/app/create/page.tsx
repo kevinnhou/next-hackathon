@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Locate, MapPin } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -20,11 +21,9 @@ import {
 } from "~/ui/form";
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
-import { redirect } from "next/navigation";
-import checkUser from "@/hooks/check-user";
 
 export default function Create() {
-  //const loggedIn = await checkUser();
+  // const loggedIn = await checkUser();
   const loggedIn = false;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,6 +75,7 @@ export default function Create() {
 
         toast.error("An error occurred while creating the group.");
       }
+      // eslint-disable-next-line ts/no-unused-vars
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {

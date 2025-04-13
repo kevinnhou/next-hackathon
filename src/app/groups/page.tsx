@@ -1,11 +1,11 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
-
-import { GroupCard } from "@/components/groups/card";
-import { Button } from "@/components/ui/button";
-import { groups } from "@/data/groups";
 import { redirect } from "next/navigation";
+
+import { groups } from "@/data/groups";
 import checkUser from "@/hooks/check-user";
+import { GroupCard } from "~/groups/card";
+import { Button } from "~/ui/button";
 
 export default async function Groups() {
   const loggedIn = await checkUser();
