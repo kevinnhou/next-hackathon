@@ -1,10 +1,10 @@
-import { login } from "@/app/actions/auth";
+import { signup } from "@/app/actions/auth";
 
 export default function LoginPage() {
   return (
     <>
       <form className="mx-auto mt-12 flex w-1/2 flex-col gap-2">
-        <h1 className="text-2xl font-bold">Login</h1>
+        <h1 className="text-2xl font-bold">Register</h1>
         <label htmlFor="email">Email:</label>
         <input
           id="email"
@@ -22,10 +22,10 @@ export default function LoginPage() {
           className="rounded-md border-2 border-gray-300 p-2"
         />
         <button
-          formAction={login}
+          formAction={signup}
           className="cursor-pointer rounded-md bg-blue-500 p-2 text-white"
         >
-          Log in
+          Sign up
         </button>
       </form>
     </>
