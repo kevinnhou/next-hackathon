@@ -4,8 +4,8 @@ import { SlidersHorizontal, User } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "~/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 
 interface GroupCardProps {
   name: string;
