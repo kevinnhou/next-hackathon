@@ -1,10 +1,7 @@
-/* eslint-disable ts/no-unused-vars */
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Locate, MapPin } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -27,16 +24,14 @@ import { Slider } from "~/ui/slider";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function Create() {
-  const supabase = await createClient();
+export default function Create() {
   let loggedIn = false;
-  const { data, error } = await supabase.auth.getUser();
+  /*const supabase = await createClient();
 
+  const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
-    loggedIn = false;
-  } else {
-    loggedIn = true;
-  }
+    redirect("/login");
+  }*/
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
