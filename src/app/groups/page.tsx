@@ -15,7 +15,7 @@ export default async function Groups() {
 
   return (
     <>
-      <div className="mx-4 my-12 lg:mx-48">
+      <div className="mx-4 my-12 max-w-5xl lg:mx-auto">
         <div className="flex flex-row justify-between">
           <h1 className="text-4xl font-bold">My Groups</h1>
           <Button asChild>
