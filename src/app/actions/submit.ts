@@ -1,7 +1,12 @@
 "use server";
 
+import { searchRestaurants } from "@/lib/geoapify";
 import type { FormValues } from "@/lib/schema";
 import { formSchema } from "@/lib/schema";
+
+// This is a simple in-memory store for demonstration purposes
+// In a real app, you would use a database or other persistent storage
+let storedRestaurants: any[] = [];
 
 export async function submit(formData: FormValues) {
   const result = formSchema.safeParse(formData);
@@ -13,13 +18,37 @@ export async function submit(formData: FormValues) {
     };
   }
 
-  // eslint-disable-next-line no-console
-  console.info("Processing group settings:", result.data);
+  try {
+    // Convert radius from miles to meters (1 mile = 1609.34 meters)
+    const radiusInMeters = result.data.radius * 1609.34;
 
-  await new Promise((resolve) => setTimeout(resolve, 500));
+    // Fetch restaurants from Geoapify
+    const restaurants = await searchRestaurants(
+      result.data.location,
+      radiusInMeters,
+      20, // limit
+    );
 
-  return {
-    success: true,
-    message: "Created successfully!",
-  };
+    // Store the restaurants (in a real app, this would be in a database)
+    storedRestaurants = restaurants;
+
+    // eslint-disable-next-line no-console
+    console.info("Fetched and stored restaurants:", restaurants.length);
+
+    return {
+      success: true,
+      message: "Group created and restaurants fetched successfully!",
+    };
+  } catch (error) {
+    console.error("Error fetching restaurants:", error);
+    return {
+      success: false,
+      message: "Failed to fetch restaurants. Please try again.",
+    };
+  }
+}
+
+// Function to retrieve stored restaurants
+export async function getStoredRestaurants() {
+  return storedRestaurants;
 }
