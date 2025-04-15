@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Locate, MapPin } from "lucide-react";
+import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -21,6 +22,10 @@ import {
 } from "~/ui/form";
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
+
+const DraggableMapPin = dynamic(() => import("@/components/create/map"), {
+  ssr: false, // <-- This is what avoids the 'window is not defined' error
+});
 
 export default function Create() {
   // const loggedIn = await checkUser();
@@ -204,11 +209,8 @@ export default function Create() {
                   </div>
 
                   {field.value === "custom" && (
-                    <div className="mt-3 flex h-[120px] items-center justify-center rounded-md border bg-muted/20">
-                      <MapPin className="mr-2 h-5 w-5 text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">
-                        Map placeholder
-                      </p>
+                    <div className="mt-3">
+                      <DraggableMapPin />
                     </div>
                   )}
                   <FormMessage />

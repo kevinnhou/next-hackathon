@@ -1,22 +1,27 @@
 "use client";
 import { Poppins } from "next/font/google";
+
 import Providers from "~/providers";
+
 import "@/app/globals.css";
 import Image from "next/image";
+
 import {
+  MobileNav,
+  MobileNavHeader,
+  MobileNavMenu,
+  MobileNavToggle,
   Navbar,
+  NavbarButton,
+  NavbarLogo,
   NavBody,
   NavItems,
-  MobileNav,
-  NavbarLogo,
-  NavbarButton,
-  MobileNavHeader,
-  MobileNavToggle,
-  MobileNavMenu,
 } from "@/components/ui/nav";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+
 import { useState } from "react";
-import { Users, Settings, CircleUserRound, LogOut } from "lucide-react";
+import { CircleUserRound, LogOut, Settings, Users } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 const poppins = Poppins({
@@ -75,7 +80,7 @@ export default function RootLayout({
       ),
     },
   ];
-  const loggedIn = true; //change when hook login done
+  const loggedIn = true; // change when hook login done
   const [open, setOpen] = useState(false);
   return (
     <html
