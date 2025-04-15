@@ -32,6 +32,15 @@ export async function submit(formData: FormValues) {
     // Store the restaurants (in a real app, this would be in a database)
     storedRestaurants = restaurants;
 
+    // Log restaurant information to the console
+    console.warn("=== RESTAURANT INFORMATION ===");
+    console.warn(`Found ${restaurants.length} restaurants near your location`);
+    console.warn("Restaurant names:");
+    restaurants.forEach((restaurant, index) => {
+      console.warn(`${index + 1}. ${restaurant.name}`);
+    });
+    console.warn("=============================");
+
     // eslint-disable-next-line no-console
     console.info("Fetched and stored restaurants:", restaurants.length);
 

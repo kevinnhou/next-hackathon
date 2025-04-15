@@ -22,25 +22,35 @@ export async function searchRestaurants(
 ): Promise<Restaurant[]> {
   try {
     const apiKey = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
+    console.warn(
+      "Geoapify API key available:",
+      apiKey ? `${apiKey.substring(0, 4)}...` : "No API key found",
+    );
 
     if (!apiKey) {
+      console.error("Geoapify API key is not set");
       throw new Error("Geoapify API key is not set");
     }
 
     // Construct the API URL
     const url = `https://api.geoapify.com/v2/places?categories=catering.restaurant&filter=circle:${location.lng},${location.lat},${radius}&limit=${limit}&apiKey=${apiKey}`;
+    console.warn("Fetching restaurants from:", url);
 
     // Make the API request
     const response = await fetch(url);
 
     if (!response.ok) {
+      console.error(`API request failed with status ${response.status}`);
       throw new Error(`API request failed with status ${response.status}`);
     }
 
     const data = await response.json();
+    console.warn(
+      `Successfully fetched ${data.features?.length || 0} restaurants`,
+    );
 
     // Process the results
-    return data.features.map((feature: any) => {
+    const restaurants = data.features.map((feature: any) => {
       const { properties } = feature;
 
       // Format the restaurant data
@@ -67,8 +77,21 @@ export async function searchRestaurants(
         },
       };
 
+      // Log each restaurant as it's processed
+      console.warn(`Restaurant: ${restaurant.name}`);
+      console.warn(`  Address: ${restaurant.address}`);
+      console.warn(
+        `  Rating: ${restaurant.rating} (${restaurant.reviews} reviews)`,
+      );
+      console.warn(
+        `  Location: ${restaurant.location?.lat}, ${restaurant.location?.lng}`,
+      );
+      console.warn("  ---");
+
       return restaurant;
     });
+
+    return restaurants;
   } catch (error) {
     console.error("Error searching for restaurants:", error);
     throw error;
@@ -116,26 +139,4 @@ function formatTime(time: string): string {
   const formattedHour = hour % 12 || 12;
 
   return `${formattedHour}:${minute} ${period}`;
-}
-
-// Function to get the user's current location
-export function getUserLocation(): Promise<{ lat: number; lng: number }> {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error("Geolocation is not supported by your browser"));
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      (error) => {
-        reject(error);
-      },
-    );
-  });
 }

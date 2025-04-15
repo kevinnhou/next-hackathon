@@ -51,23 +51,27 @@ export default function Create() {
   // Function to handle geolocation and update current location
   const getCurrentLocation = () => {
     setIsLoadingLocation(true);
+    console.warn("Getting current location...");
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           const newLocation = { lat: latitude, lng: longitude };
+          console.warn("Current location obtained:", newLocation);
           setCurrentLocation(newLocation);
           form.setValue("location", newLocation);
           form.setValue("locationType", "current");
           setIsLoadingLocation(false);
         },
-        () => {
+        (error) => {
           // Handle error if user denies permission or if location is unavailable
+          console.error("Error getting current location:", error);
           toast.error("Unable to retrieve your location.");
           setIsLoadingLocation(false);
         },
       );
     } else {
+      console.error("Geolocation is not supported by your browser");
       toast.error("Geolocation is not supported by your browser.");
       setIsLoadingLocation(false);
     }
@@ -75,15 +79,18 @@ export default function Create() {
 
   // Function to handle location selection (current or custom)
   function handleLocationSelect(type: "current" | "custom") {
+    console.warn(`Location type selected: ${type}`);
     form.setValue("locationType", type);
 
     if (type === "current") {
       getCurrentLocation();
     } else if (currentLocation) {
       // For custom, use current location if available
+      console.warn("Using current location for custom mode:", currentLocation);
       form.setValue("location", currentLocation);
     } else {
       // Try to get current location for custom mode
+      console.warn("No current location available, attempting to get it");
       getCurrentLocation();
     }
   }
@@ -91,11 +98,13 @@ export default function Create() {
   // Initialize with current location if available
   useEffect(() => {
     // Try to get current location on component mount
+    console.warn("Initializing location on component mount");
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           const newLocation = { lat: latitude, lng: longitude };
+          console.warn("Initial location obtained:", newLocation);
           setCurrentLocation(newLocation);
           // Only update form if it's still using the default location
           const currentFormLocation = form.getValues("location");
@@ -103,13 +112,13 @@ export default function Create() {
             currentFormLocation.lat === 40.7128 &&
             currentFormLocation.lng === -74.006
           ) {
+            console.warn("Updating form with initial location");
             form.setValue("location", newLocation);
           }
         },
-        () => {
+        (error) => {
           // Silently fail if user denies permission
-          // Using console.warn instead of console.log to comply with linting rules
-          console.warn("Geolocation permission denied");
+          console.warn("Geolocation permission denied on initial load");
         },
       );
     }
@@ -117,10 +126,14 @@ export default function Create() {
 
   async function onSubmit(data: FormValues) {
     try {
+      console.warn("Submitting form with data:", data);
+      console.warn("Location being used:", data.location);
+      console.warn("Radius in km:", data.radius);
       setIsSubmitting(true);
       const result = await submit(data);
 
       if (result.success) {
+        console.warn("Form submitted successfully:", result);
         toast.success(result.message);
         // router.push("/groups")
         if (!loggedIn) {
@@ -129,6 +142,7 @@ export default function Create() {
           redirect("/groups");
         }
       } else {
+        console.error("Form submission failed:", result);
         if (result.errors) {
           Object.entries(result.errors).forEach(([field, errors]) => {
             if (errors && errors.length > 0) {
@@ -142,8 +156,8 @@ export default function Create() {
 
         toast.error("An error occurred while creating the group.");
       }
-      // eslint-disable-next-line ts/no-unused-vars
     } catch (error) {
+      console.error("Error submitting form:", error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
