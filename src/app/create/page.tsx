@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Locate, MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -31,6 +31,11 @@ export default function Create() {
   // const loggedIn = await checkUser();
   const loggedIn = false;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -43,15 +48,72 @@ export default function Create() {
     },
   });
 
+  // Function to handle geolocation and update current location
+  const getCurrentLocation = () => {
+    setIsLoadingLocation(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const newLocation = { lat: latitude, lng: longitude };
+          setCurrentLocation(newLocation);
+          form.setValue("location", newLocation);
+          form.setValue("locationType", "current");
+          setIsLoadingLocation(false);
+        },
+        () => {
+          // Handle error if user denies permission or if location is unavailable
+          toast.error("Unable to retrieve your location.");
+          setIsLoadingLocation(false);
+        },
+      );
+    } else {
+      toast.error("Geolocation is not supported by your browser.");
+      setIsLoadingLocation(false);
+    }
+  };
+
+  // Function to handle location selection (current or custom)
   function handleLocationSelect(type: "current" | "custom") {
     form.setValue("locationType", type);
 
     if (type === "current") {
-      form.setValue("location", { lat: 37.7749, lng: -122.4194 }); // San Francisco
+      getCurrentLocation();
+    } else if (currentLocation) {
+      // For custom, use current location if available
+      form.setValue("location", currentLocation);
     } else {
-      form.setValue("location", { lat: 40.7128, lng: -74.006 }); // New York
+      // Try to get current location for custom mode
+      getCurrentLocation();
     }
   }
+
+  // Initialize with current location if available
+  useEffect(() => {
+    // Try to get current location on component mount
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const newLocation = { lat: latitude, lng: longitude };
+          setCurrentLocation(newLocation);
+          // Only update form if it's still using the default location
+          const currentFormLocation = form.getValues("location");
+          if (
+            currentFormLocation.lat === 40.7128 &&
+            currentFormLocation.lng === -74.006
+          ) {
+            form.setValue("location", newLocation);
+          }
+        },
+        () => {
+          // Silently fail if user denies permission
+          // Using console.warn instead of console.log to comply with linting rules
+          console.warn("Geolocation permission denied");
+        },
+      );
+    }
+  }, []);
 
   async function onSubmit(data: FormValues) {
     try {
@@ -187,9 +249,12 @@ export default function Create() {
                           : "",
                       )}
                       onClick={() => handleLocationSelect("current")}
+                      disabled={isLoadingLocation}
                     >
                       <Locate className="mb-1 h-5 w-5" />
-                      <span className="text-sm">Current Location</span>
+                      <span className="text-sm">
+                        {isLoadingLocation ? "Loading..." : "Current Location"}
+                      </span>
                     </Button>
 
                     <Button
@@ -202,15 +267,23 @@ export default function Create() {
                           : "",
                       )}
                       onClick={() => handleLocationSelect("custom")}
+                      disabled={isLoadingLocation}
                     >
                       <MapPin className="mb-1 h-5 w-5" />
-                      <span className="text-sm">Pick on Map</span>
+                      <span className="text-sm">
+                        {isLoadingLocation ? "Loading..." : "Pick on Map"}
+                      </span>
                     </Button>
                   </div>
 
                   {field.value === "custom" && (
                     <div className="mt-3">
-                      <DraggableMapPin />
+                      <DraggableMapPin
+                        value={form.watch("location")}
+                        onChange={(newLocation) =>
+                          form.setValue("location", newLocation)
+                        }
+                      />
                     </div>
                   )}
                   <FormMessage />
@@ -222,7 +295,9 @@ export default function Create() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={!form.formState.isValid || isSubmitting}
+                disabled={
+                  !form.formState.isValid || isSubmitting || isLoadingLocation
+                }
               >
                 {isSubmitting ? "Creating..." : "Create Group"}
               </Button>
