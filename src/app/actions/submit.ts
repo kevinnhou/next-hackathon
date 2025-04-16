@@ -1,6 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 import { searchRestaurants } from "@/data/restaurants";
+import checkUser from "@/hooks/check-user";
 import type { FormValues } from "@/lib/schema";
 import { formSchema } from "@/lib/schema";
 
@@ -10,6 +13,11 @@ let storedRestaurants: any[] = [];
 
 export async function submit(formData: FormValues) {
   const result = formSchema.safeParse(formData);
+
+  const isLoggedIn = await checkUser();
+  if (!isLoggedIn) {
+    redirect("/login");
+  }
 
   if (!result.success) {
     return {
