@@ -115,8 +115,7 @@ export default function Create() {
             form.setValue("location", newLocation);
           }
         },
-        (error) => {
-          // Silently fail if user denies permission
+        () => {
           console.warn("Geolocation permission denied on initial load");
         },
       );

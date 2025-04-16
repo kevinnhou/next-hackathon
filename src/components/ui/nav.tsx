@@ -1,3 +1,5 @@
+/* eslint-disable react/no-clone-element */
+/* eslint-disable react/no-children-map */
 "use client";
 
 import { IconMenu2, IconX } from "@tabler/icons-react";
@@ -200,7 +202,6 @@ export function MobileNavMenu({
   children,
   className,
   isOpen,
-  onClose,
 }: MobileNavMenuProps) {
   return (
     <AnimatePresence>

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { login } from "@/app/actions/auth";
 
+import { login } from "@/app/actions/auth";
 import { Button } from "~/ui/button";
 import { Input } from "~/ui/input";
 import { Label } from "~/ui/label";
