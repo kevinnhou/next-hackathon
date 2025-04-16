@@ -8,12 +8,12 @@ import { Button } from "~/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "~/ui/input-otp";
 
 export default function Join() {
-  const [code, setCode] = useState("");
+  const [groupId, setGroupId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   async function handleJoinGroup() {
-    if (code.length !== 6) {
+    if (groupId.length !== 6) {
       toast.error("Please enter a valid 6-digit code");
       return;
     }
@@ -22,7 +22,7 @@ export default function Join() {
 
     try {
       toast.success("You've joined the group successfully");
-      router.push(`/group/${code}`);
+      router.push(`/lobby/${groupId}`);
       // eslint-disable-next-line ts/no-unused-vars
     } catch (error) {
       toast.error("Failed to join group. Please try again.");
@@ -42,7 +42,7 @@ export default function Join() {
         </div>
 
         <div className="flex justify-center py-6">
-          <InputOTP maxLength={6} value={code} onChange={setCode}>
+          <InputOTP maxLength={6} value={groupId} onChange={setGroupId}>
             <InputOTPGroup>
               <InputOTPSlot index={0} />
               <InputOTPSlot index={1} />
@@ -58,7 +58,7 @@ export default function Join() {
           <Button
             className="w-full"
             onClick={handleJoinGroup}
-            disabled={code.length !== 6 || isSubmitting}
+            disabled={groupId.length !== 6 || isSubmitting}
           >
             {isSubmitting ? "Joining..." : "Join Group"}
           </Button>
