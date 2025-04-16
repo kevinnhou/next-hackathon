@@ -42,9 +42,6 @@ export default function LoginPage() {
       if (result?.error) {
         toast.error("Login failed");
       }
-      // eslint-disable-next-line ts/no-unused-vars
-    } catch (error) {
-      toast.error("Please try again later");
     } finally {
       setIsLoading(false);
     }
