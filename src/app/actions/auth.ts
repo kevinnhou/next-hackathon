@@ -18,7 +18,10 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    redirect("/error");
+    // Return error message instead of redirecting
+    return {
+      error: error.message,
+    };
   }
 
   revalidatePath("/", "layout");
@@ -38,9 +41,20 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp(data);
 
   if (error) {
-    redirect("/error");
+    // Return error message instead of redirecting
+    return {
+      error: error.message,
+    };
   }
 
+  return {
+    success: "Check your email for the confirmation link.",
+  };
+}
+
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/login");
 }

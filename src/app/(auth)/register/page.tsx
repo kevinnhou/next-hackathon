@@ -1,13 +1,70 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { signup } from "@/app/actions/auth";
-import { Button } from "~/ui/button";
-import { Input } from "~/ui/input";
-import { Label } from "~/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      if (!formData.email || !formData.password) {
+        toast.error("Please fill in all fields");
+        setIsLoading(false);
+        return;
+      }
+
+      if (formData.password.length < 6) {
+        toast.error("Password must be at least 6 characters long");
+        setIsLoading(false);
+        return;
+      }
+
+      const data = new FormData();
+      data.append("email", formData.email);
+      data.append("password", formData.password);
+
+      const result = await signup(data);
+
+      if (result?.error) {
+        toast.error("Registration failed");
+      } else if (result?.success) {
+        toast.success(
+          "Registration successful! Check your email for the confirmation link.",
+        );
+        router.push("/login");
+      }
+      // eslint-disable-next-line ts/no-unused-vars
+    } catch (error) {
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
-    <div className="container mx-auto flex h-screen w-full items-center justify-center">
+    <div className="container mx-auto flex min-h-[calc(100vh-8rem)] w-full items-center justify-center">
       <div className="w-full max-w-2xl space-y-8 rounded-lg bg-background p-10 shadow-sm">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold tracking-tight">Register</h1>
@@ -16,7 +73,7 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <form action={signup} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-base">
@@ -26,6 +83,8 @@ export default function RegisterPage() {
                 id="email"
                 name="email"
                 type="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="name@example.com"
                 required
                 className="h-12 text-base"
@@ -40,14 +99,20 @@ export default function RegisterPage() {
                 id="password"
                 name="password"
                 type="password"
+                value={formData.password}
+                onChange={handleChange}
                 required
                 className="h-12 text-base"
               />
             </div>
           </div>
 
-          <Button type="submit" className="h-12 w-full text-base">
-            Sign up
+          <Button
+            type="submit"
+            className="h-12 w-full text-base"
+            disabled={isLoading}
+          >
+            {isLoading ? "Creating account..." : "Sign up"}
           </Button>
 
           <div className="text-center">
