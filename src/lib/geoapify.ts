@@ -1,4 +1,4 @@
-// Define the restaurant type
+// Define the restaurant type to match the existing interface
 export interface Restaurant {
   id: string;
   name: string;
@@ -14,38 +14,43 @@ export interface Restaurant {
   };
 }
 
-// Function to fetch restaurants from Geoapify API
-export async function fetchRestaurants(
-  location?: { lat: number; lng: number },
+// Function to search for restaurants near a location
+export async function searchRestaurants(
+  location: { lat: number; lng: number },
   radius: number = 5000, // Default radius in meters (5km)
   limit: number = 20,
 ): Promise<Restaurant[]> {
   try {
     const apiKey = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
+    console.warn(
+      "Geoapify API key available:",
+      apiKey ? `${apiKey.substring(0, 4)}...` : "No API key found",
+    );
 
     if (!apiKey) {
       console.error("Geoapify API key is not set");
-      return getFallbackRestaurants();
+      throw new Error("Geoapify API key is not set");
     }
 
-    // If no location is provided, use a default location (New York City)
-    const searchLocation = location || { lat: 40.7128, lng: -74.006 };
-
     // Construct the API URL
-    const url = `https://api.geoapify.com/v2/places?categories=catering.restaurant&filter=circle:${searchLocation.lng},${searchLocation.lat},${radius}&limit=${limit}&apiKey=${apiKey}`;
+    const url = `https://api.geoapify.com/v2/places?categories=catering.restaurant&filter=circle:${location.lng},${location.lat},${radius}&limit=${limit}&apiKey=${apiKey}`;
+    console.warn("Fetching restaurants from:", url);
 
     // Make the API request
     const response = await fetch(url);
 
     if (!response.ok) {
       console.error(`API request failed with status ${response.status}`);
-      return getFallbackRestaurants();
+      throw new Error(`API request failed with status ${response.status}`);
     }
 
     const data = await response.json();
+    console.warn(
+      `Successfully fetched ${data.features?.length || 0} restaurants`,
+    );
 
     // Process the results
-    return data.features.map((feature: any) => {
+    const restaurants = data.features.map((feature: any) => {
       const { properties } = feature;
 
       // Format the restaurant data
@@ -72,11 +77,24 @@ export async function fetchRestaurants(
         },
       };
 
+      // Log each restaurant as it's processed
+      console.warn(`Restaurant: ${restaurant.name}`);
+      console.warn(`  Address: ${restaurant.address}`);
+      console.warn(
+        `  Rating: ${restaurant.rating} (${restaurant.reviews} reviews)`,
+      );
+      console.warn(
+        `  Location: ${restaurant.location?.lat}, ${restaurant.location?.lng}`,
+      );
+      console.warn("  ---");
+
       return restaurant;
     });
+
+    return restaurants;
   } catch (error) {
-    console.error("Error fetching restaurants:", error);
-    return getFallbackRestaurants();
+    console.error("Error searching for restaurants:", error);
+    throw error;
   }
 }
 
@@ -122,72 +140,3 @@ function formatTime(time: string): string {
 
   return `${formattedHour}:${minute} ${period}`;
 }
-
-// Fallback restaurants in case the API call fails
-function getFallbackRestaurants(): Restaurant[] {
-  return [
-    {
-      id: "1",
-      name: "Pasta Paradise",
-      address: "123 Main St, Cityville",
-      phoneNumber: "(555) 123-4567",
-      openingHours: "Mon-Sat: 11AM-10PM",
-      photos: ["/sample.webp"],
-      rating: 4.7,
-      reviews: 243,
-    },
-    {
-      id: "2",
-      name: "Burger Bistro",
-      address: "456 Oak Ave, Townsburg",
-      phoneNumber: "(555) 987-6543",
-      openingHours: "Daily: 10AM-11PM",
-      photos: ["/sample.webp"],
-      rating: 4.3,
-      reviews: 187,
-    },
-    {
-      id: "3",
-      name: "Sushi Sensation",
-      address: "789 Pine Rd, Villageton",
-      phoneNumber: "(555) 456-7890",
-      openingHours: "Tue-Sun: 12PM-9PM",
-      photos: ["/sample.webp"],
-      rating: 4.9,
-      reviews: 312,
-    },
-    {
-      id: "4",
-      name: "Taco Temple",
-      address: "101 Elm St, Hamletville",
-      phoneNumber: "(555) 234-5678",
-      openingHours: "Mon-Sun: 11AM-9PM",
-      photos: ["/sample.webp"],
-      rating: 4.5,
-      reviews: 178,
-    },
-    {
-      id: "5",
-      name: "Pizza Palace",
-      address: "202 Maple Ave, Boroughton",
-      phoneNumber: "(555) 345-6789",
-      openingHours: "Tue-Sun: 12PM-11PM",
-      photos: ["/sample.webp"],
-      rating: 4.6,
-      reviews: 256,
-    },
-    {
-      id: "6",
-      name: "Dim Sum Delight",
-      address: "303 Cedar Rd, Districtville",
-      phoneNumber: "(555) 456-7890",
-      openingHours: "Wed-Mon: 10AM-8PM",
-      photos: ["/sample.webp"],
-      rating: 4.8,
-      reviews: 201,
-    },
-  ];
-}
-
-// For backward compatibility, export the fallback restaurants as a static array
-export const restaurants = getFallbackRestaurants();
