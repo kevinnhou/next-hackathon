@@ -1,16 +1,18 @@
 "use client";
-import { cn } from "@/lib/utils";
+
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import {
-  motion,
   AnimatePresence,
-  useScroll,
+  motion,
   useMotionValueEvent,
+  useScroll,
 } from "motion/react";
-import Link from "next/link";
-import React, { useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React, { useRef, useState } from "react";
+
+import { cn } from "@/lib/utils";
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -50,7 +52,7 @@ interface MobileNavMenuProps {
   onClose: () => void;
 }
 
-export const Navbar = ({ children, className }: NavbarProps) => {
+export function Navbar({ children, className }: NavbarProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({
     target: ref,
@@ -87,9 +89,9 @@ export const Navbar = ({ children, className }: NavbarProps) => {
       )}
     </motion.div>
   );
-};
+}
 
-export const NavBody = ({ children, className, visible }: NavBodyProps) => {
+export function NavBody({ children, className, visible }: NavBodyProps) {
   return (
     <motion.div
       animate={{
@@ -117,9 +119,9 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
       {children}
     </motion.div>
   );
-};
+}
 
-export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
+export function NavItems({ items, className, onItemClick }: NavItemsProps) {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
@@ -149,9 +151,9 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
       ))}
     </motion.div>
   );
-};
+}
 
-export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
+export function MobileNav({ children, className, visible }: MobileNavProps) {
   return (
     <motion.div
       animate={{
@@ -179,12 +181,9 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
       {children}
     </motion.div>
   );
-};
+}
 
-export const MobileNavHeader = ({
-  children,
-  className,
-}: MobileNavHeaderProps) => {
+export function MobileNavHeader({ children, className }: MobileNavHeaderProps) {
   return (
     <div
       className={cn(
@@ -195,14 +194,14 @@ export const MobileNavHeader = ({
       {children}
     </div>
   );
-};
+}
 
-export const MobileNavMenu = ({
+export function MobileNavMenu({
   children,
   className,
   isOpen,
   onClose,
-}: MobileNavMenuProps) => {
+}: MobileNavMenuProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -220,23 +219,23 @@ export const MobileNavMenu = ({
       )}
     </AnimatePresence>
   );
-};
+}
 
-export const MobileNavToggle = ({
+export function MobileNavToggle({
   isOpen,
   onClick,
 }: {
   isOpen: boolean;
   onClick: () => void;
-}) => {
+}) {
   return isOpen ? (
     <IconX className="text-black dark:text-white" onClick={onClick} />
   ) : (
     <IconMenu2 className="text-black dark:text-white" onClick={onClick} />
   );
-};
+}
 
-export const NavbarLogo = () => {
+export function NavbarLogo() {
   return (
     <Link
       href="/"
@@ -251,9 +250,9 @@ export const NavbarLogo = () => {
       <span className="font-medium text-black dark:text-white">Tavolo</span>
     </Link>
   );
-};
+}
 
-export const NavbarButton = ({
+export function NavbarButton({
   href,
   as: Tag = "a",
   children,
@@ -269,7 +268,7 @@ export const NavbarButton = ({
 } & (
   | React.ComponentPropsWithoutRef<"a">
   | React.ComponentPropsWithoutRef<"button">
-)) => {
+)) {
   const baseStyles =
     "px-4 py-2 rounded-md bg-white button bg-white text-black text-sm font-bold relative cursor-pointer transition duration-200 inline-block text-center";
 
@@ -292,4 +291,4 @@ export const NavbarButton = ({
       {children}
     </Tag>
   );
-};
+}
