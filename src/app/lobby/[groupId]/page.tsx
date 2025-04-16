@@ -3,7 +3,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { User } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Button } from "~/ui/button";
@@ -35,7 +35,9 @@ export default function GroupLobbyPage() {
     Array<{ id: number; name: string; avatar: string }>
   >([]);
   const [isHost, setIsHost] = useState(true); // For demo purposes, set to true
-  const [groupCode] = useState("XK42P9"); // Example group code
+
+  const params = useParams();
+  const groupCode = params.groupId; // returns the value from the URL
 
   // Simulate users joining over time
   useEffect(() => {
