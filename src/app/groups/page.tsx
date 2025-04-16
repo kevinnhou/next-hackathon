@@ -1,14 +1,17 @@
-"use client";
-
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-import { useGroups } from "@/contexts/group-context";
+import { groups } from "@/data/groups";
+import checkUser from "@/hooks/check-user";
 import { GroupCard } from "~/groups/card";
 import { Button } from "~/ui/button";
 
-export default function Groups() {
-  const { groups } = useGroups();
+export default async function Groups() {
+  const loggedIn = await checkUser();
+  if (!loggedIn) {
+    redirect("/login");
+  }
 
   return (
     <>
