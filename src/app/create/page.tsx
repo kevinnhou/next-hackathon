@@ -23,7 +23,7 @@ import {
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
 
-const DraggableMapPin = dynamic(() => import("@/components/create/map"), {
+const DraggableMapPin = dynamic(() => import("~/create/map"), {
   ssr: false, // <-- This is what avoids the 'window is not defined' error
 });
 
@@ -49,7 +49,7 @@ export default function Create() {
   });
 
   // Function to handle geolocation and update current location
-  const getCurrentLocation = () => {
+  function getCurrentLocation() {
     setIsLoadingLocation(true);
     console.warn("Getting current location...");
     if (navigator.geolocation) {
@@ -75,9 +75,8 @@ export default function Create() {
       toast.error("Geolocation is not supported by your browser.");
       setIsLoadingLocation(false);
     }
-  };
+  }
 
-  // Function to handle location selection (current or custom)
   function handleLocationSelect(type: "current" | "custom") {
     console.warn(`Location type selected: ${type}`);
     form.setValue("locationType", type);
@@ -116,8 +115,7 @@ export default function Create() {
             form.setValue("location", newLocation);
           }
         },
-        (error) => {
-          // Silently fail if user denies permission
+        () => {
           console.warn("Geolocation permission denied on initial load");
         },
       );

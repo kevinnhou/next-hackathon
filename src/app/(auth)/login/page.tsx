@@ -1,13 +1,54 @@
-import Link from "next/link";
-import { login } from "@/app/actions/auth";
+"use client";
 
+import Link from "next/link";
+import type React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import { login } from "@/app/actions/auth";
 import { Button } from "~/ui/button";
 import { Input } from "~/ui/input";
 import { Label } from "~/ui/label";
 
 export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      if (!formData.email || !formData.password) {
+        toast.error("Please fill in all fields");
+        setIsLoading(false);
+        return;
+      }
+
+      const data = new FormData();
+      data.append("email", formData.email);
+      data.append("password", formData.password);
+
+      const result = await login(data);
+
+      if (result?.error) {
+        toast.error("Login failed");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
-    <div className="container mx-auto flex h-screen w-full items-center justify-center">
+    <div className="container mx-auto flex min-h-[calc(100vh-8rem)] w-full items-center justify-center">
       <div className="w-full max-w-2xl space-y-8 rounded-lg bg-background p-10 shadow-sm">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold tracking-tight">Login</h1>
@@ -16,7 +57,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form action={login} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-base">
@@ -26,6 +67,8 @@ export default function LoginPage() {
                 id="email"
                 name="email"
                 type="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="name@example.com"
                 required
                 className="h-12 text-base"
@@ -40,14 +83,20 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type="password"
+                value={formData.password}
+                onChange={handleChange}
                 required
                 className="h-12 text-base"
               />
             </div>
           </div>
 
-          <Button type="submit" className="h-12 w-full text-base">
-            Log in
+          <Button
+            type="submit"
+            className="h-12 w-full text-base"
+            disabled={isLoading}
+          >
+            {isLoading ? "Logging in..." : "Log in"}
           </Button>
 
           <div className="text-center">

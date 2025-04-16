@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { navigationLinks } from "@/config/site";
 import { Button } from "~/ui/button";
 
 export default function LandingPage() {
