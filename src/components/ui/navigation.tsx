@@ -4,6 +4,7 @@ import { CircleUserRound, LogOut, Settings, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { createClient } from "@/utils/supabase/client";
 import {
   MobileNav,
   MobileNavHeader,
@@ -14,8 +15,7 @@ import {
   NavbarLogo,
   NavBody,
   NavItems,
-} from "@/components/ui/nav";
-import { createClient } from "@/utils/supabase/client";
+} from "~/ui/nav";
 import { Sidebar, SidebarBody, SidebarLink } from "~/ui/sidebar";
 
 interface NavigationProps {

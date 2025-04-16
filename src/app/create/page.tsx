@@ -23,7 +23,7 @@ import {
 import { Input } from "~/ui/input";
 import { Slider } from "~/ui/slider";
 
-const DraggableMapPin = dynamic(() => import("@/components/create/map"), {
+const DraggableMapPin = dynamic(() => import("~/create/map"), {
   ssr: false, // <-- This is what avoids the 'window is not defined' error
 });
 
