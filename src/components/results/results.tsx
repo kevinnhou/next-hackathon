@@ -4,16 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check, X } from "lucide-react";
 import { useState } from "react";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { restaurants } from "@/data/restaurants"; // Import from your existing file
@@ -22,26 +12,32 @@ import { cn } from "@/lib/utils";
 export function Results() {
   const [vetoed, setVetoed] = useState<string[]>([]);
   const [chosenRestaurant, setChosenRestaurant] = useState<any | null>(null);
-  const [restaurantToConfirm, setRestaurantToConfirm] = useState<any | null>(
-    null,
-  );
 
   // Get top 3 restaurants that haven't been vetoed
   const topThree = restaurants
-    .filter((restaurant) => !vetoed.includes(restaurant.id))
+    .filter((restaurant: any) => !vetoed.includes(restaurant.id))
     .slice(0, 3);
 
+  // Get remaining restaurants (not in top 3 and not vetoed)
+  const remainingRestaurants = restaurants.filter(
+    (restaurant) =>
+      !topThree.some((top) => top.id === restaurant.id) &&
+      !vetoed.includes(restaurant.id),
+  );
+
   const handleVeto = (id: string) => {
-    setVetoed((prev) => [...prev, id]);
+    setVetoed((prev) => {
+      // If the ID is already in the vetoed list, remove it (unveto)
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      }
+      // Otherwise, add it to the vetoed list
+      return [...prev, id];
+    });
   };
 
   const handleChoose = (restaurant: any) => {
-    setRestaurantToConfirm(restaurant);
-  };
-
-  const confirmChoice = () => {
-    setChosenRestaurant(restaurantToConfirm);
-    setRestaurantToConfirm(null);
+    setChosenRestaurant(restaurant);
   };
 
   const resetResults = () => {
@@ -50,7 +46,6 @@ export function Results() {
   };
 
   const goBack = () => {
-    // Not sure if we should have this in the Database Implementation - confirm later.
     setChosenRestaurant(null);
   };
 
@@ -80,7 +75,7 @@ export function Results() {
           <Card className="overflow-hidden border-2 border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950">
             <div className="relative">
               <img
-                src={chosenRestaurant.imageUrl || "/placeholder.svg"}
+                src={chosenRestaurant.imageUrl || "/sample.webp"}
                 alt={chosenRestaurant.name}
                 className="h-64 w-full object-cover"
               />
@@ -149,27 +144,107 @@ export function Results() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
-      <div className="grid gap-6">
-        <AnimatePresence mode="popLayout">
-          {topThree.map((restaurant, index) => (
+    <div className="mx-auto w-full max-w-5xl">
+      {/* Podium Title */}
+      <div className="mb-8 text-center">
+        <p className="text-muted-foreground">
+          Choose your favorite or veto to see more options
+        </p>
+      </div>
+
+      {/* Podium layout */}
+      <div className="flex w-full flex-col items-center">
+        {/* Desktop Podium */}
+        <div className="hidden w-full items-end justify-center sm:flex">
+          {/* Second Place */}
+          <div
+            className="mx-4 flex flex-col items-center"
+            style={{ width: "300px" }}
+          >
+            <AnimatePresence mode="wait">
+              {topThree[1] && (
+                <motion.div
+                  key={topThree[1].id}
+                  className="mb-2 w-full"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <ResultCard
+                    restaurant={topThree[1]}
+                    position={2}
+                    onVeto={() => handleVeto(topThree[1].id)}
+                    onChoose={() => handleChoose(topThree[1])}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="h-20 w-full rounded-t-lg bg-slate-400"></div>
+          </div>
+
+          {/* First Place */}
+          <div
+            className="z-10 mx-4 flex flex-col items-center"
+            style={{ width: "300px" }}
+          >
+            <AnimatePresence mode="wait">
+              {topThree[0] && (
+                <motion.div
+                  key={topThree[0].id}
+                  className="mb-2 w-full"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                >
+                  <ResultCard
+                    restaurant={topThree[0]}
+                    position={1}
+                    onVeto={() => handleVeto(topThree[0].id)}
+                    onChoose={() => handleChoose(topThree[0])}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="h-30 w-full rounded-t-lg bg-amber-500"></div>
+          </div>
+
+          {/* Third Place */}
+          <div
+            className="mx-4 flex flex-col items-center"
+            style={{ width: "300px" }}
+          >
+            <AnimatePresence mode="wait">
+              {topThree[2] && (
+                <motion.div
+                  key={topThree[2].id}
+                  className="mb-2 w-full"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <ResultCard
+                    restaurant={topThree[2]}
+                    position={3}
+                    onVeto={() => handleVeto(topThree[2].id)}
+                    onChoose={() => handleChoose(topThree[2])}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="h-10 w-full rounded-t-lg bg-orange-400"></div>
+          </div>
+        </div>
+
+        {/* Mobile view - stacked cards */}
+        <div className="mb-8 w-full space-y-6 sm:hidden">
+          {topThree.map((restaurant: any, index: number) => (
             <motion.div
-              key={restaurant.id}
+              key={`mobile-${restaurant.id}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{
-                opacity: 0,
-                x: -300,
-                transition: { duration: 0.3 },
-              }}
-              layout
-              layoutId={restaurant.id}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-                opacity: { duration: 0.2 },
-              }}
+              transition={{ delay: index * 0.1 }}
             >
               <ResultCard
                 restaurant={restaurant}
@@ -179,64 +254,92 @@ export function Results() {
               />
             </motion.div>
           ))}
-        </AnimatePresence>
-      </div>
+        </div>
 
-      {vetoed.length > 0 && (
-        <motion.div
-          className="mt-8 text-center"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button onClick={resetResults} variant="outline">
-              Reset Results
-            </Button>
+        {/* Divider */}
+        <div className="my-12 w-full border-t" />
+
+        {/* All other restaurants */}
+        <div className="hidden w-full sm:block">
+          <h3 className="mb-4 text-xl font-semibold">All Restaurants</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {remainingRestaurants.map((restaurant) => (
+              <motion.div
+                key={restaurant.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <RestaurantListItem
+                  restaurant={restaurant}
+                  onVeto={() => handleVeto(restaurant.id)}
+                  onChoose={() => handleChoose(restaurant)}
+                />
+              </motion.div>
+            ))}
+            {vetoed.length > 0 && (
+              <div className="col-span-1 mt-4 md:col-span-2">
+                <h4 className="mb-2 text-lg font-medium">Vetoed Restaurants</h4>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {restaurants
+                    .filter((restaurant) => vetoed.includes(restaurant.id))
+                    .map((restaurant) => (
+                      <motion.div
+                        key={`vetoed-${restaurant.id}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <RestaurantListItem
+                          restaurant={restaurant}
+                          isVetoed={true}
+                          onVeto={() => handleVeto(restaurant.id)}
+                          onChoose={() => handleChoose(restaurant)}
+                        />
+                      </motion.div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Reset Button */}
+        {vetoed.length > 0 && (
+          <motion.div
+            className="mt-4 text-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button onClick={resetResults} variant="outline">
+                Reset Results
+              </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
 
-      {vetoed.length > 0 && topThree.length === 0 && (
-        <motion.div
-          className="mt-8 rounded-lg border p-8 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <p className="text-lg text-muted-foreground">
-            You've vetoed all available options. Reset to see results again.
-          </p>
-        </motion.div>
-      )}
-
-      {/* Confirmation Dialog */}
-      <AlertDialog
-        open={!!restaurantToConfirm}
-        onOpenChange={(open) => !open && setRestaurantToConfirm(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Your Choice</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to choose {restaurantToConfirm?.name}? This
-              will be your final decision.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmChoice}>
-              Confirm
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* No results message */}
+        {vetoed.length > 0 && topThree.length === 0 && (
+          <motion.div
+            className="mt-8 w-full max-w-md rounded-lg border p-8 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <p className="text-lg text-muted-foreground">
+              You've vetoed all available options. Reset to see results again.
+            </p>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
 
 interface ResultCardProps {
-  restaurant: any; // Using 'any' to accommodate your existing data structure
+  restaurant: any;
   position: number;
   onVeto: () => void;
   onChoose: () => void;
@@ -249,27 +352,27 @@ function ResultCard({
   onChoose,
 }: ResultCardProps) {
   const positionColors = {
-    1: "bg-amber-100 border-amber-200 dark:bg-amber-950 dark:border-amber-900",
-    2: "bg-slate-100 border-slate-200 dark:bg-slate-900 dark:border-slate-800",
-    3: "bg-orange-100 border-orange-200 dark:bg-orange-950 dark:border-orange-900",
+    1: "bg-amber-100 border-amber-300 dark:bg-amber-950 dark:border-amber-800",
+    2: "bg-slate-100 border-slate-300 dark:bg-slate-900 dark:border-slate-700",
+    3: "bg-orange-100 border-orange-300 dark:bg-orange-950 dark:border-orange-800",
   };
 
   const positionLabels = {
-    1: "🥇 First Choice",
-    2: "🥈 Second Choice",
-    3: "🥉 Third Choice",
+    1: "🥇 First Place",
+    2: "🥈 Second Place",
+    3: "🥉 Third Place",
   };
 
   return (
     <Card
       className={cn(
-        "overflow-hidden border-2",
+        "overflow-hidden border-2 shadow-lg",
         positionColors[position as keyof typeof positionColors],
       )}
     >
       <div className="relative">
         <img
-          src={restaurant.imageUrl || "/placeholder.svg"}
+          src={restaurant.imageUrl || "/sample.webp"}
           alt={restaurant.name}
           className="h-48 w-full object-cover"
         />
@@ -278,7 +381,10 @@ function ResultCard({
             <Button
               variant="destructive"
               size="icon"
-              onClick={onVeto}
+              onClick={(e) => {
+                e.stopPropagation();
+                onVeto();
+              }}
               aria-label={`Veto ${restaurant.name}`}
             >
               <X className="h-4 w-4" />
@@ -288,7 +394,10 @@ function ResultCard({
             <Button
               variant="default"
               size="icon"
-              onClick={onChoose}
+              onClick={(e) => {
+                e.stopPropagation();
+                onChoose();
+              }}
               className="bg-green-600 hover:bg-green-700"
               aria-label={`Choose ${restaurant.name}`}
             >
@@ -323,5 +432,102 @@ function ResultCard({
         </span>
       </CardFooter>
     </Card>
+  );
+}
+
+interface RestaurantListItemProps {
+  restaurant: any;
+  isVetoed?: boolean;
+  onVeto?: () => void;
+  onChoose: () => void;
+}
+
+function RestaurantListItem({
+  restaurant,
+  isVetoed = false,
+  onVeto,
+  onChoose,
+}: RestaurantListItemProps) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-3 rounded-lg border p-3",
+        isVetoed
+          ? "border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
+          : "",
+      )}
+    >
+      <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md">
+        <img
+          src={restaurant.imageUrl || "/placeholder.svg"}
+          alt={restaurant.name}
+          className="h-full w-full object-cover"
+        />
+      </div>
+      <div className="min-w-0 flex-grow">
+        <h3 className="truncate font-medium">{restaurant.name}</h3>
+        <div className="flex items-center text-sm text-muted-foreground">
+          <span className="truncate">{restaurant.cuisine}</span>
+          <span className="mx-1">•</span>
+          <span>⭐ {restaurant.rating}</span>
+          <span className="mx-1">•</span>
+          <span>{restaurant.distance}</span>
+        </div>
+      </div>
+      <div className="flex flex-shrink-0 gap-2">
+        {/* Veto and Choose Button - only show if the restaurant is not vetoed */}
+        {!isVetoed && onVeto && (
+          <>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onVeto();
+                }}
+                aria-label={`Veto ${restaurant.name}`}
+                className="h-8 w-8"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="default"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChoose();
+                }}
+                className={cn("h-8 w-8", "bg-green-600 hover:bg-green-700")}
+                aria-label={`Choose ${restaurant.name}`}
+              >
+                <Check className="h-3 w-3" />
+              </Button>
+            </motion.div>
+          </>
+        )}
+        {/* Unveto Button - only show if the restaurant is vetoed */}
+        {isVetoed && (
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              variant="default"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onVeto) {
+                  onVeto();
+                }
+              }}
+              className="h-8 w-8 bg-blue-500 hover:bg-blue-600"
+              aria-label={`Unveto ${restaurant.name}`}
+            >
+              <ArrowLeft className="h-3 w-3" />
+            </Button>
+          </motion.div>
+        )}
+      </div>
+    </div>
   );
 }
