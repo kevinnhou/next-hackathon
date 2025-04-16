@@ -15,13 +15,17 @@ export interface Restaurant {
 }
 
 // Function to fetch restaurants from Geoapify API
-export async function fetchRestaurants(
+export async function searchRestaurants(
   location?: { lat: number; lng: number },
   radius: number = 5000, // Default radius in meters (5km)
   limit: number = 20,
 ): Promise<Restaurant[]> {
   try {
     const apiKey = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
+    console.warn(
+      "Geoapify API key available:",
+      apiKey ? `${apiKey.substring(0, 4)}...` : "No API key found",
+    );
 
     if (!apiKey) {
       console.error("Geoapify API key is not set");
@@ -33,6 +37,7 @@ export async function fetchRestaurants(
 
     // Construct the API URL
     const url = `https://api.geoapify.com/v2/places?categories=catering.restaurant&filter=circle:${searchLocation.lng},${searchLocation.lat},${radius}&limit=${limit}&apiKey=${apiKey}`;
+    console.warn("Fetching restaurants from:", url);
 
     // Make the API request
     const response = await fetch(url);
@@ -43,9 +48,12 @@ export async function fetchRestaurants(
     }
 
     const data = await response.json();
+    console.warn(
+      `Successfully fetched ${data.features?.length || 0} restaurants`,
+    );
 
     // Process the results
-    return data.features.map((feature: any) => {
+    const restaurants = data.features.map((feature: any) => {
       const { properties } = feature;
 
       // Format the restaurant data
@@ -72,8 +80,21 @@ export async function fetchRestaurants(
         },
       };
 
+      // Log each restaurant as it's processed
+      console.warn(`Restaurant: ${restaurant.name}`);
+      console.warn(`  Address: ${restaurant.address}`);
+      console.warn(
+        `  Rating: ${restaurant.rating} (${restaurant.reviews} reviews)`,
+      );
+      console.warn(
+        `  Location: ${restaurant.location?.lat}, ${restaurant.location?.lng}`,
+      );
+      console.warn("  ---");
+
       return restaurant;
     });
+
+    return restaurants;
   } catch (error) {
     console.error("Error fetching restaurants:", error);
     return getFallbackRestaurants();
