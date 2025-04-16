@@ -1,6 +1,6 @@
 "use server";
 
-import { searchRestaurants } from "@/lib/geoapify";
+import { searchRestaurants } from "@/data/restaurants";
 import type { FormValues } from "@/lib/schema";
 import { formSchema } from "@/lib/schema";
 

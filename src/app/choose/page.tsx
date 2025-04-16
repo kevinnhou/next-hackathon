@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { getStoredRestaurants } from "@/app/actions/submit";
-import type { Restaurant } from "@/lib/geoapify";
+import type { Restaurant } from "@/data/restaurants";
 import { SwipeCards } from "~/swipe/stacked";
 
 export default function Swipe() {
