@@ -3,10 +3,23 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { getUserGroups } from "@/actions/groups";
+import { getUserGroups } from "../actions/groups";
+
 import checkUser from "@/hooks/check-user";
 import { GroupCard } from "~/groups/card";
 import { Button } from "~/ui/button";
+
+interface Group {
+  id: string;
+  name: string;
+  budget: number;
+  radius: number;
+  location: { lat: number; lng: number } | null;
+  address?: string;
+  users: number;
+  active: boolean;
+  createdAt: Date;
+}
 
 export default async function Groups() {
   const loggedIn = await checkUser();
@@ -14,7 +27,7 @@ export default async function Groups() {
     redirect("/login");
   }
 
-  const groups = await getUserGroups();
+  const groups = (await getUserGroups()) as Group[];
 
   return (
     <div className="mx-4 my-12 max-w-5xl lg:mx-auto">
@@ -36,6 +49,7 @@ export default async function Groups() {
             budget={group.budget}
             radius={group.radius}
             location={group.location}
+            address={group.address}
             users={group.users}
             active={group.active}
             date={group.createdAt}

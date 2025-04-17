@@ -13,7 +13,8 @@ interface GroupCardProps {
   name: string;
   budget: number;
   radius: number;
-  location: string;
+  location: { lat: number; lng: number } | null;
+  address?: string;
   users: number;
   active: boolean;
   date: Date;
@@ -25,10 +26,18 @@ export function GroupCard({
   budget,
   radius,
   location,
+  address,
   users,
   active,
   date,
 }: GroupCardProps) {
+  // Format location for display
+  const locationDisplay =
+    address ||
+    (location
+      ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
+      : "No location");
+
   if (active) {
     return (
       <Card className="relative inline-flex h-full grow flex-col overflow-hidden rounded-xl border-0 bg-card p-[1px]">
@@ -52,7 +61,7 @@ export function GroupCard({
               ${budget.toFixed(2)} budget
             </p>
             <p className="text-sm text-foreground/40">
-              {location} - {radius}km radius
+              {locationDisplay} - {radius}km radius
             </p>
             <p className="text-sm text-foreground/40">
               Created {date.toLocaleDateString()}
@@ -80,7 +89,7 @@ export function GroupCard({
             ${budget.toFixed(2)} budget
           </p>
           <p className="text-sm text-foreground/40">
-            {location} - {radius}km radius
+            {locationDisplay} - {radius}km radius
           </p>
           <p className="text-sm text-foreground/40">
             Created {date.toLocaleDateString()}
