@@ -57,6 +57,8 @@ export async function submit(formData: FormValues) {
   }
 
   try {
+    // -------------------------------------------- Start of group creation -------------------------------------------- //
+
     console.log("Starting group creation process");
 
     // Convert radius from miles to meters (1 mile = 1609.34 meters)
@@ -137,6 +139,10 @@ export async function submit(formData: FormValues) {
       return { error: hostError.message };
     }
 
+    // -------------------------------------------- End of group creation -------------------------------------------- //
+
+    // -------------------------------------------- Start of restaurant logic ---------------------------------------- //
+
     // Fetch restaurants from Geoapify
     console.log("Fetching restaurants from Geoapify");
     const restaurants = await searchRestaurants(
@@ -146,8 +152,33 @@ export async function submit(formData: FormValues) {
     );
     console.log(`Fetched ${restaurants.length} restaurants`);
 
-    console.log("Formatting restaurants for database");
-    const formattedRestaurants = restaurants.map((restaurant) => ({
+    // Getting existing restaurants from the database
+    const geoapifyIds = restaurants.map((r) => r.id); // r.id is from Geoapify
+    console.log("Checking if some restaurants already exist in the database");
+    const { data: existingRestaurants, error: existingRestaurantsError } =
+      await supabase
+        .from("restaurants")
+        .select("id, external_id")
+        .in("external_id", geoapifyIds);
+
+    if (existingRestaurantsError) {
+      console.error(
+        "Error fetching existing restaurants:",
+        existingRestaurantsError.message,
+      );
+      return { error: existingRestaurantsError.message };
+    }
+    //Create a Set of already existing external_ids
+    const existingIds = new Set(existingRestaurants.map((r) => r.external_id));
+
+    // Filter out existing restaurants
+    const newRestaurants = restaurants.filter((r) => !existingIds.has(r.id));
+
+    console.log(`Found ${newRestaurants.length} new restaurants to insert`);
+
+    // Format the new restaurants for database
+    const formattedNewRestaurants = newRestaurants.map((restaurant) => ({
+      external_id: restaurant.id,
       name: restaurant.name,
       address: restaurant.address,
       latitude: restaurant.location?.lat,
@@ -155,49 +186,55 @@ export async function submit(formData: FormValues) {
       rating: restaurant.rating,
     }));
 
-    // First, insert unique restaurants
-    console.log("Inserting restaurants into database");
-    const { data: insertedRestaurants, error: insertError } = await supabase
-      .from("restaurants")
-      .upsert(formattedRestaurants, { onConflict: "id" }) // Assuming each restaurant has a unique ID
-      .select();
+    // Insert the new restaurants into the database
+    let insertedRestaurants = [];
+    if (formattedNewRestaurants.length > 0) {
+      console.log("Inserting new restaurants into the database");
+      const { data, error: insertError } = await supabase
+        .from("restaurants")
+        .upsert(formattedNewRestaurants, { onConflict: "external_id" })
+        .select();
 
-    console.log(
-      "Restaurant insertion result:",
-      insertError ? "Error" : "Success",
-      insertError ? insertError.message : "",
-      insertedRestaurants
-        ? `Inserted ${insertedRestaurants.length} restaurants`
-        : "",
-    );
+      if (insertError) {
+        console.error("Error inserting new restaurants:", insertError.message);
+        return { error: insertError.message };
+      }
 
-    if (insertError) {
-      console.error("Error inserting restaurants:", insertError.message);
-      return { error: insertError.message };
+      insertedRestaurants = data;
+      console.log(
+        `Successfully inserted ${insertedRestaurants.length} new restaurants`,
+      );
+    } else {
+      console.log("No new restaurants to insert");
     }
 
-    // Then, link restaurants to group via group_restaurants
-    console.log("Linking restaurants to group");
+    // Now, link **both** existing and new restaurants to the group
+    console.log("Linking existing and new restaurants to the group");
+    const restaurantsToLink = [
+      ...existingRestaurants.map((restaurant) => ({
+        group_id: group.id,
+        restaurant_id: restaurant.id, // Existing restaurants
+      })),
+      ...insertedRestaurants.map((restaurant) => ({
+        group_id: group.id,
+        restaurant_id: restaurant.id, // New restaurants
+      })),
+    ];
+
+    // Insert the link entries into the group_restaurants table
     const { error: linkError } = await supabase
       .from("group_restaurants")
-      .insert(
-        insertedRestaurants.map((restaurant) => ({
-          group_id: group.id,
-          restaurant_id: restaurant.id,
-          votes: 0,
-        })),
-      );
-
-    console.log(
-      "Restaurant linking result:",
-      linkError ? "Error" : "Success",
-      linkError ? linkError.message : "",
-    );
+      .insert(restaurantsToLink);
 
     if (linkError) {
-      console.error("Error linking restaurants:", linkError.message);
+      console.error("Error linking restaurants to group:", linkError.message);
       return { error: linkError.message };
     }
+
+    console.log(
+      `Successfully linked ${restaurantsToLink.length} restaurants to the group.`,
+    );
+
     // Log restaurant information to the console (debugging)
     console.warn("=== RESTAURANT INFORMATION ===");
     console.warn(`Found ${restaurants.length} restaurants near your location`);

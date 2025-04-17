@@ -152,7 +152,9 @@ export default function Create() {
           });
         }
 
-        toast.error("An error occurred while creating the group.");
+        toast.error(
+          result.message || "An error occurred while creating the group.",
+        );
       }
     } catch (error) {
       console.error("Error submitting form:", error);

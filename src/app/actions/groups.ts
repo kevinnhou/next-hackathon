@@ -82,7 +82,6 @@ export async function getUserGroups() {
           group.latitude && group.longitude
             ? { lat: group.latitude, lng: group.longitude }
             : null,
-        address: group.address,
         users: memberCounts[group.id] || 0,
         active: group.is_active,
         createdAt: new Date(group.created_at),
