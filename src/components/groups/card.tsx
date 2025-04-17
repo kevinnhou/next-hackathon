@@ -14,7 +14,6 @@ interface GroupCardProps {
   budget: number;
   radius: number;
   location: { lat: number; lng: number } | null;
-  address?: string;
   users: number;
   active: boolean;
   date: Date;
@@ -26,17 +25,14 @@ export function GroupCard({
   budget,
   radius,
   location,
-  address,
   users,
   active,
   date,
 }: GroupCardProps) {
   // Format location for display
-  const locationDisplay =
-    address ||
-    (location
-      ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
-      : "No location");
+  const locationDisplay = location
+    ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
+    : "No location";
 
   if (active) {
     return (
