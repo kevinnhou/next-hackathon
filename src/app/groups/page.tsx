@@ -15,7 +15,6 @@ interface Group {
   budget: number;
   radius: number;
   location: { lat: number; lng: number } | null;
-  address?: string;
   users: number;
   active: boolean;
   createdAt: Date;
@@ -49,7 +48,6 @@ export default async function Groups() {
             budget={group.budget}
             radius={group.radius}
             location={group.location}
-            address={group.address}
             users={group.users}
             active={group.active}
             date={group.createdAt}

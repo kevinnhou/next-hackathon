@@ -26,17 +26,14 @@ export function GroupCard({
   budget,
   radius,
   location,
-  address,
   users,
   active,
   date,
 }: GroupCardProps) {
   // Format location for display
-  const locationDisplay =
-    address ||
-    (location
-      ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
-      : "No location");
+  const locationDisplay = location
+    ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
+    : "No location";
 
   if (active) {
     return (

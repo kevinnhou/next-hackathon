@@ -43,7 +43,6 @@ export async function getUserGroups() {
         radius,
         latitude,
         longitude,
-        address,
         created_at,
         is_active
       `,
