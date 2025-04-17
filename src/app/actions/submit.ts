@@ -7,6 +7,7 @@ import checkUser from "@/hooks/check-user";
 import type { FormValues } from "@/lib/schema";
 import { formSchema } from "@/lib/schema";
 import { createClient } from "@/utils/supabase/server";
+import { generateJoincode } from "@/utils/generate-joincode";
 
 export async function submit(formData: FormValues) {
   console.log("Starting submit function with formData:", formData);
@@ -90,6 +91,8 @@ export async function submit(formData: FormValues) {
     }
 
     console.log("Creating new group");
+    const joincode = generateJoincode(6); // Generate a 6-character joincode
+
     const { data: group, error: groupError } = await supabase
       .from("groups")
       .insert({
@@ -100,6 +103,7 @@ export async function submit(formData: FormValues) {
         longitude: result.data.location.lng,
         created_by: user.id,
         is_active: true, // optional but nice
+        joincode: joincode, // Add the joincode
       })
       .select()
       .single();
@@ -108,7 +112,7 @@ export async function submit(formData: FormValues) {
       "Group creation result:",
       groupError ? "Error" : "Success",
       groupError ? groupError.message : "",
-      group ? `Group ID: ${group.id}` : "",
+      group ? `Group ID: ${group.id}, Joincode: ${joincode}` : "",
     );
 
     if (groupError) {
@@ -250,6 +254,7 @@ export async function submit(formData: FormValues) {
     return {
       success: true,
       message: "Group created and restaurants fetched successfully!",
+      joincode: joincode,
     };
   } catch (error) {
     console.error("Error fetching restaurants:", error);

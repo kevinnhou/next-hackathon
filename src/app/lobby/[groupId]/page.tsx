@@ -57,7 +57,7 @@ export default function GroupLobbyPage() {
 
   const handleStart = () => {
     // Navigate to the next page when the host starts the choosing process
-    router.push("/choose");
+    router.push(`/choose?code=${groupCode}`);
   };
 
   return (
