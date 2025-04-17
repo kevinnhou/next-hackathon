@@ -2,9 +2,26 @@
 
 import { useEffect, useState } from "react";
 
-import { getStoredRestaurants } from "@/app/actions/submit";
+// import { getStoredRestaurants } from "@/app/actions/submit"; CHANGE TO GET RESTAURANTS FROM DATABASE BASED OFF CURRENT GROUP!
 import type { Restaurant } from "@/data/restaurants";
 import { SwipeCards } from "~/swipe/stacked";
+
+async function getStoredRestaurants() {
+  // Temporary return mock data that matches the Restaurant type - TODO: Get restaurants from database based off current group
+  return [
+    {
+      id: "1",
+      name: "Temporary Restaurant",
+      address: "123 Main St",
+      phoneNumber: "555-1234",
+      openingHours: "9AM-5PM",
+      photos: [],
+      rating: 4.5,
+      reviews: 100,
+      location: { lat: 0, lng: 0 },
+    },
+  ];
+}
 
 export default function Swipe() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);

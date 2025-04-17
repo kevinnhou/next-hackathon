@@ -14,7 +14,6 @@ interface GroupCardProps {
   budget: number;
   radius: number;
   location: { lat: number; lng: number } | null;
-  address?: string;
   users: number;
   active: boolean;
   date: Date;
