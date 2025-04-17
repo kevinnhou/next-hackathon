@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import type { Restaurant } from "@/data/restaurants";
 import { SwipeCards } from "~/swipe/stacked";
 import { createClient } from "@/utils/supabase/client";
+import { storeVote } from "@/app/actions/votes";
 
 // Define the type for the restaurant data from the database
 interface DbRestaurant {
@@ -15,6 +16,16 @@ interface DbRestaurant {
   latitude: number;
   longitude: number;
   rating: number;
+}
+
+// Add this interface for vote data
+interface Vote {
+  id: string;
+  user_id: string;
+  restaurant_id: string;
+  group_id: string;
+  vote_value: boolean; // true for like, false for dislike
+  created_at: string;
 }
 
 async function getStoredRestaurants(joincode: string) {
@@ -90,6 +101,20 @@ export default function Swipe() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleVote = async (restaurantId: string, voteValue: boolean) => {
+    if (!joincode) {
+      setError("No group code provided");
+      return;
+    }
+
+    try {
+      await storeVote(joincode, restaurantId, voteValue);
+    } catch (error) {
+      console.error("Failed to store vote:", error);
+      setError("Failed to store vote");
+    }
+  };
+
   useEffect(() => {
     async function loadRestaurants() {
       if (!joincode) {
@@ -141,7 +166,7 @@ export default function Swipe() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <SwipeCards restaurants={restaurants} />
+      <SwipeCards restaurants={restaurants} onVote={handleVote} />
     </div>
   );
 }
