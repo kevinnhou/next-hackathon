@@ -1,7 +1,7 @@
 // components/groups/card.tsx
 "use client";
 
-import { SlidersHorizontal, User } from "lucide-react";
+import { ArrowRight, SlidersHorizontal, User } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
 
@@ -73,11 +73,18 @@ export function GroupCard({
       <div className="py-4">
         <CardHeader className="flex flex-row justify-between">
           <CardTitle className="text-2xl font-bold">{name}</CardTitle>
-          <Button asChild variant="secondary" size="icon">
-            <Link href={`/groups/${id}/settings`}>
-              <SlidersHorizontal strokeWidth={2} />
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button asChild variant="secondary" size="icon">
+              <Link href="/create">
+                <SlidersHorizontal strokeWidth={2} />
+              </Link>
+            </Button>
+            <Button asChild variant="secondary" size="icon">
+              <Link href="/results">
+                <ArrowRight strokeWidth={2} />
+              </Link>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-foreground/40">{users} members</p>
