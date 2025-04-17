@@ -2,28 +2,30 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { restaurants } from "@/data/restaurants"; // Import from your existing file
 import { cn } from "@/lib/utils";
 
+import { getTopRestaurants } from "@/app/actions/result_search";
+
 export function Results() {
   const [vetoed, setVetoed] = useState<string[]>([]);
   const [chosenRestaurant, setChosenRestaurant] = useState<any | null>(null);
+  const [topThree, setTopThree] = useState<any[]>([]);
+  const [remainingRestaurants, setRemainingRestaurants] = useState<any[]>([]);
 
-  // Get top 3 restaurants that haven't been vetoed
-  const topThree = restaurants
-    .filter((restaurant: any) => !vetoed.includes(restaurant.id))
-    .slice(0, 3);
-
-  // Get remaining restaurants (not in top 3 and not vetoed)
-  const remainingRestaurants = restaurants.filter(
-    (restaurant) =>
-      !topThree.some((top) => top.id === restaurant.id) &&
-      !vetoed.includes(restaurant.id),
-  );
+  useEffect(() => {
+    async function fetchTopRestaurants() {
+      const { topRestaurants, remainingRestaurants } =
+        await getTopRestaurants();
+      setTopThree(topRestaurants);
+      setRemainingRestaurants(remainingRestaurants);
+    }
+    fetchTopRestaurants();
+  }, []);
 
   const handleVeto = (id: string) => {
     setVetoed((prev) => {
