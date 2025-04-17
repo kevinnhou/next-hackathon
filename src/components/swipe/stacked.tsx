@@ -21,10 +21,12 @@ export function SwipeCards({
   restaurants,
   spreadDistance = 40,
   rotationAngle = 5,
+  onVote,
 }: {
   restaurants: RestaurantData[];
   spreadDistance?: number;
   rotationAngle?: number;
+  onVote?: (restaurantId: string, voteValue: boolean) => Promise<void>;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayedCards, setDisplayedCards] = useState<RestaurantData[]>([]);
@@ -35,8 +37,17 @@ export function SwipeCards({
     setDisplayedCards(restaurants.slice(0, Math.min(3, restaurants.length)));
   }, [restaurants]);
 
-  function removeCard(direction: "left" | "right") {
+  async function removeCard(direction: "left" | "right") {
     setIsTransitioning(true);
+
+    const currentRestaurant = displayedCards[0];
+    if (currentRestaurant && onVote) {
+      try {
+        await onVote(currentRestaurant.id, direction === "right");
+      } catch (error) {
+        console.error("Failed to store vote:", error);
+      }
+    }
 
     const newDisplayedCards = [...displayedCards];
     newDisplayedCards.shift();
